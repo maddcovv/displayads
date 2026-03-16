@@ -101,6 +101,18 @@ const XIcon = () => (
     <path d="M18 6L6 18M6 6l12 12" />
   </svg>
 );
+const ExportIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+    <polyline points="17 8 12 3 7 8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
+  </svg>
+);
+const SignOutIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+  </svg>
+);
 const EditIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
     <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
@@ -281,30 +293,140 @@ function Sidebar({ currentPage, onNavigate }) {
   );
 }
 
+const navNotifications = [
+  { id: 1, title: "Halloween Candy campaign approved",      time: "2 hours ago",  read: false },
+  { id: 2, title: "Easter Candy budget 80% reached",        time: "5 hours ago",  read: false },
+  { id: 3, title: "Super Bowl Snacks campaign ended",       time: "1 day ago",    read: true  },
+  { id: 4, title: "Valentine's Candy performance report ready", time: "2 days ago", read: true },
+];
+
 function TopNav() {
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [showUser,   setShowUser]   = useState(false);
+  const unread = navNotifications.filter(n => !n.read).length;
+
+  const closeAll = () => { setShowNotifs(false); setShowUser(false); };
+
   return (
-    <header className="fixed top-0 left-0 right-0 h-[52px] bg-[#0071CE] flex items-center px-4 gap-3 z-20">
-      <div className="flex items-center gap-2">
-        <WalmartSpark />
-        <span className="text-white font-bold text-base tracking-tight"
+    <>
+      {/* Click-away backdrop */}
+      {(showNotifs || showUser) && (
+        <div className="fixed inset-0 z-30" onClick={closeAll} />
+      )}
+
+      <header className="fixed top-0 left-0 right-0 h-[52px] bg-[#0071CE] flex items-center px-4 gap-3 z-40">
+        <div className="flex items-center gap-2">
+          <WalmartSpark />
+          <span className="text-white font-bold text-base tracking-tight"
+            style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
+            Display Self Service
+          </span>
+          <ChevronDown size={12} />
+        </div>
+        <span className="text-white opacity-40 text-lg font-thin ml-1">|</span>
+        <button className="flex items-center gap-1.5 text-white text-sm opacity-90 hover:opacity-100"
           style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
-          Display Self Service
-        </span>
-        <ChevronDown size={12} />
-      </div>
-      <span className="text-white opacity-40 text-lg font-thin ml-1">|</span>
-      <button className="flex items-center gap-1.5 text-white text-sm opacity-90 hover:opacity-100"
-        style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
-        My Candy Corp
-        <ChevronDown size={12} />
-      </button>
-      <div className="flex-1" />
-      <div className="flex items-center gap-3 text-white opacity-80">
-        <button className="hover:opacity-100"><BellIcon /></button>
-        <button className="hover:opacity-100"><HelpIcon /></button>
-        <button className="hover:opacity-100"><UserIcon /></button>
-      </div>
-    </header>
+          My Candy Corp
+          <ChevronDown size={12} />
+        </button>
+        <div className="flex-1" />
+
+        <div className="flex items-center gap-1 text-white relative">
+
+          {/* ── Bell / Notifications ── */}
+          <div className="relative">
+            <button
+              onClick={() => { setShowNotifs(v => !v); setShowUser(false); }}
+              className="relative p-2 rounded-full hover:bg-white/10 transition-colors">
+              <BellIcon />
+              {unread > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+                  {unread}
+                </span>
+              )}
+            </button>
+
+            {showNotifs && (
+              <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden"
+                style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                  <h3 className="text-sm font-semibold text-gray-800">Notifications</h3>
+                  <button className="text-xs text-[#0071CE] hover:underline font-medium">Mark all read</button>
+                </div>
+                <div className="max-h-72 overflow-y-auto divide-y divide-gray-50">
+                  {navNotifications.map(n => (
+                    <div key={n.id}
+                      className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${!n.read ? "bg-blue-50/50" : ""}`}>
+                      <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${!n.read ? "bg-[#0071CE]" : "bg-gray-200"}`} />
+                      <div className="min-w-0">
+                        <p className="text-xs text-gray-800 leading-snug">{n.title}</p>
+                        <p className="text-[10px] text-gray-400 mt-0.5">{n.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="px-4 py-2.5 border-t border-gray-100 text-center">
+                  <button className="text-xs text-[#0071CE] hover:underline font-medium">View all notifications</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Help ── */}
+          <button className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100">
+            <HelpIcon />
+          </button>
+
+          {/* ── User / Account ── */}
+          <div className="relative">
+            <button
+              onClick={() => { setShowUser(v => !v); setShowNotifs(false); }}
+              className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100">
+              <UserIcon />
+            </button>
+
+            {showUser && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden"
+                style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
+                {/* Profile header */}
+                <div className="px-4 py-4 bg-gray-50 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-[#0071CE] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      JR
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 truncate">John Reese</p>
+                      <p className="text-xs text-gray-500 truncate">john@mycandycorp.com</p>
+                    </div>
+                  </div>
+                </div>
+                {/* Menu */}
+                <div className="py-1">
+                  {[
+                    { icon: <UserIcon />,      label: "My Profile" },
+                    { icon: <GearIcon />,      label: "Account Settings" },
+                    { icon: <BriefcaseIcon />, label: "My Candy Corp" },
+                  ].map(item => (
+                    <button key={item.label}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left">
+                      <span className="text-gray-400 shrink-0 inline-flex">{item.icon}</span>
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="border-t border-gray-100 py-1">
+                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                    <span className="shrink-0 inline-flex"><SignOutIcon /></span>
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+        </div>
+      </header>
+    </>
   );
 }
 
@@ -1068,13 +1190,19 @@ function DashboardPage() {
     <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
 
       {/* Page title */}
-      <h1 style={{
-        fontFamily: "'Nunito Sans', sans-serif",
-        fontSize: "32px", fontWeight: 700, color: "#2e2f32",
-        letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2, marginBottom: "24px",
-      }}>
-        Dashboard
-      </h1>
+      <div className="flex items-center justify-between" style={{ marginBottom: "24px" }}>
+        <h1 style={{
+          fontFamily: "'Nunito Sans', sans-serif",
+          fontSize: "32px", fontWeight: 700, color: "#2e2f32",
+          letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2,
+        }}>
+          Dashboard
+        </h1>
+        <button className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 transition-colors shadow-sm">
+          <ExportIcon />
+          Export
+        </button>
+      </div>
 
       {/* ── Filters ── */}
       <div className="flex flex-wrap items-center gap-2 mb-5">
@@ -1260,11 +1388,17 @@ export default function AllCampaigns() {
             }}>
               All Campaigns
             </h1>
-            <button
-              onClick={() => setCreate(true)}
-              className="bg-[#0071CE] hover:bg-[#005FA3] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm">
-              Create campaign
-            </button>
+            <div className="flex items-center gap-3">
+              <button className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 transition-colors shadow-sm">
+                <ExportIcon />
+                Export
+              </button>
+              <button
+                onClick={() => setCreate(true)}
+                className="bg-[#0071CE] hover:bg-[#005FA3] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm">
+                Create campaign
+              </button>
+            </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
