@@ -274,16 +274,17 @@ function Sidebar({ currentPage, onNavigate }) {
     <aside
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
-      style={{ width: expanded ? "448px" : "52px", transition: "width 200ms ease" }}
+      style={{ width: expanded ? "280px" : "52px", transition: "width 200ms ease" }}
       className="fixed left-0 top-[52px] bottom-0 bg-white border-r border-gray-200 flex flex-col pt-3 gap-1 z-30 overflow-hidden shadow-sm"
     >
       {navItems.map((item) => (
         <button key={item.label} title={!expanded ? item.label : undefined}
           onClick={() => onNavigate && onNavigate(item.page)}
-          className={`h-10 flex items-center gap-3 px-3 mx-1.5 rounded-lg transition-colors whitespace-nowrap
+          className={`h-10 flex items-center mx-1.5 rounded-lg transition-colors whitespace-nowrap overflow-hidden
             ${currentPage === item.page ? "bg-blue-50 text-[#0071CE]" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
-          <span className="shrink-0">{item.icon}</span>
-          <span className={`text-sm font-medium transition-opacity duration-150 ${expanded ? "opacity-100" : "opacity-0"}`}
+          {/* Fixed-width icon slot — always 46px so icon stays centered when collapsed */}
+          <span className="shrink-0 w-[46px] flex items-center justify-center">{item.icon}</span>
+          <span className={`text-sm font-medium pr-3 transition-opacity duration-150 ${expanded ? "opacity-100" : "opacity-0"}`}
             style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
             {item.label}
           </span>
@@ -1163,11 +1164,220 @@ function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, c
   );
 }
 
+// ── Dashboard helpers ──────────────────────────────────────────────────────────
+
+// Small illustrated account-summary card icons
+const IconLive = () => (
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <circle cx="22" cy="22" r="22" fill="#FFF0F5"/>
+    <path d="M14 19v6h4l5 4V15l-5 4h-4z" fill="#F472B6"/>
+    <path d="M28 17.5c2 1.3 3.3 3.5 3.3 6s-1.3 4.7-3.3 6" stroke="#F472B6" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+    <circle cx="31" cy="15" r="3" fill="#FB923C"/>
+    <circle cx="33" cy="13" r="2" fill="#FBBF24"/>
+  </svg>
+);
+const IconScheduled = () => (
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <circle cx="22" cy="22" r="22" fill="#EFF6FF"/>
+    <circle cx="22" cy="22" r="9" stroke="#93C5FD" strokeWidth="2" fill="none"/>
+    <path d="M22 15v7l4 4" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="22" cy="13" r="1.5" fill="#BFDBFE"/>
+    <circle cx="29" cy="15" r="1.5" fill="#BFDBFE"/>
+    <circle cx="31" cy="22" r="1.5" fill="#BFDBFE"/>
+  </svg>
+);
+const IconOutBudget = () => (
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <circle cx="22" cy="22" r="22" fill="#FFF7ED"/>
+    <polygon points="22,12 31,31 13,31" fill="#FB923C"/>
+    <rect x="16" y="24" width="12" height="2.5" fill="white" opacity="0.7"/>
+    <rect x="13.5" y="31" width="17" height="2.5" fill="#F97316" rx="1.2"/>
+    <text x="22" y="22.5" textAnchor="middle" fontSize="8" fontWeight="800" fill="white">!</text>
+  </svg>
+);
+const IconBilling = () => (
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <circle cx="22" cy="22" r="22" fill="#EFF6FF"/>
+    <path d="M12 16h2.5l3 9h10l2-7H18" stroke="#3B82F6" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="18.5" cy="28" r="2" fill="#3B82F6"/>
+    <circle cx="26.5" cy="28" r="2" fill="#3B82F6"/>
+    <text x="28" y="17" fontSize="8" fontWeight="700" fill="#3B82F6">$</text>
+  </svg>
+);
+
+const ACCT_SUMMARY = [
+  { icon: <IconLive />,       label: "Live campaigns",            value: "10", link: "View campaigns",     linkPage: "campaigns" },
+  { icon: <IconScheduled />,  label: "Scheduled campaigns",       value: "03", link: "View campaigns",     linkPage: "campaigns" },
+  { icon: <IconOutBudget />,  label: "Out of budget campaigns",   value: "02", link: "View campaigns",     linkPage: "campaigns" },
+  { icon: <IconBilling />,    label: "Outstanding balance",       value: "$14,250", link: "Visit billing manager", linkPage: null },
+];
+
+const INIT_TASKS = [
+  { id: 1, pre: "You have", link: "2 campaigns",  post: "that are out of budget.",                      iconColor: "#EF4444" },
+  { id: 2, pre: "You have", link: "10 items",     post: "that are rejected within your campaign.",      iconColor: "#EF4444" },
+  { id: 3, pre: "You have", link: "1 invoice",    post: "that is unpaid.",                              iconColor: "#F59E0B" },
+];
+
+const REC_SLIDES = [
+  {
+    col1: {
+      title: "Campaign out of budget",
+      body: "When the campaign runs out of budget midday, you are losing out on potential ad engagement. Apply our suggested budget adjustments to optimize your campaign.",
+      highlight: "Your daily budget was reached yesterday at 3:00pm.",
+      name: "Halloween|Candy|Cross Device|Auto|All Positions L...",
+      stats: [
+        { left: "Estimated missed clicks:", right: "Estimated missed impressions:" },
+        { left: "300 - 790",                right: "$3.4k – $6.9k" },
+        { left: "Suggested daily budget:",  right: "Current daily budget:" },
+        { left: "$500",                     right: "$250" },
+      ],
+      cta: { pre: "Stop campaign budget from running out.", link: "Review and apply budget" },
+    },
+    col2: {
+      title: "Optimize your items",
+      body: "When the campaign runs out of budget midday, you are losing out on potential ad engagement. Apply our suggested budget adjustments to optimize your campaign.",
+      items: [
+        { name: "Fun Size Snickers Variety Bag", id: "101224596", brand: "Mars",      note: "Low impressions.",           action: "Review and edit item",            color: "#8B4513" },
+        { name: "M&M's Halloween Mix 52oz",      id: "101224597", brand: "Mars",      note: "Inconsistent ROAS.",         action: "Review and adjust bid to $1.32",  color: "#CC0000" },
+        { name: "Reese's Peanut Butter Cups Bag",id: "101224598", brand: "Hershey's", note: "Low OLQ score (22%).",       action: "Improve your OLQ score",          color: "#FF8C00" },
+      ],
+    },
+    col3: {
+      title: "Optimize your keywords",
+      body: "When the campaign runs out of budget midday, you are losing out on potential ad engagement. Apply our suggested budget adjustments to optimize your campaign.",
+      groups: [
+        { name: "Halloween Candy Campaign",    tags: ["Chocolate","Candy","Halloween","Seasonal"],          action: { pre: "Lowest performing keywords.", link: "Review and remove" } },
+        { name: "Easter Spring Collection",    tags: ["Easter","Bunny","Chocolate","Pastel","Spring","+2"], action: { pre: "Monitor your keywords with automated rules.", link: "Learn more" } },
+        { name: "Valentine's Day Candy",       tags: ["Hearts","Chocolate","Gifts","Love","Sweet"],        action: null },
+      ],
+    },
+  },
+];
+
+function RecommendationsInsights() {
+  const [slide, setSlide] = useState(0);
+  const total = 5;
+  const s = REC_SLIDES[0]; // single slide data for all positions
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-4">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3 border-b border-purple-100" style={{ background: "#FAF5FF" }}>
+        <div className="flex items-center gap-2">
+          <span className="text-purple-500">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </span>
+          <span className="text-sm font-semibold text-gray-800">Recommendations and insights ({slide + 1}/{total})</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <button onClick={() => setSlide(v => Math.max(0, v - 1))} disabled={slide === 0}
+            className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-30 text-gray-500">
+            <ChevronLeft size={12}/>
+          </button>
+          <button onClick={() => setSlide(v => Math.min(total - 1, v + 1))} disabled={slide === total - 1}
+            className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 disabled:opacity-30 text-gray-500">
+            <ChevronRight size={12}/>
+          </button>
+        </div>
+      </div>
+
+      {/* 3-column body */}
+      <div className="grid grid-cols-3 divide-x divide-gray-100 p-0">
+        {/* Col 1 – Campaign out of budget */}
+        <div className="p-5">
+          <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col1.title}</h3>
+          <p className="text-xs text-gray-500 leading-relaxed mb-3">{s.col1.body}</p>
+          <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FEF3C7"/><path d="M12 7v5M12 16h.01" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round"/></svg>
+            <p className="text-xs text-amber-800">{s.col1.highlight}</p>
+          </div>
+          <p className="text-xs text-gray-500 mb-1">Campaign name:</p>
+          <a href="#" className="text-xs text-[#0071CE] hover:underline font-medium block mb-3">{s.col1.name}</a>
+          <div className="grid grid-cols-2 gap-y-0.5 text-xs mb-4">
+            {s.col1.stats.map((row, i) => (
+              <React.Fragment key={i}>
+                <span className={i % 2 === 0 ? "font-medium text-gray-700" : "text-gray-800"}>{row.left}</span>
+                <span className={i % 2 === 0 ? "font-medium text-gray-700" : "text-gray-800"}>{row.right}</span>
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <p className="text-xs text-gray-500">{s.col1.cta.pre}{" "}
+              <a href="#" className="text-[#0071CE] hover:underline">{s.col1.cta.link}</a>
+            </p>
+          </div>
+        </div>
+
+        {/* Col 2 – Optimize items */}
+        <div className="p-5">
+          <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col2.title}</h3>
+          <p className="text-xs text-gray-500 leading-relaxed mb-4">{s.col2.body}</p>
+          <div className="space-y-4">
+            {s.col2.items.map((item, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-12 h-12 rounded shrink-0 flex items-center justify-center border border-gray-100" style={{ backgroundColor: item.color + "22" }}>
+                  <div className="w-7 h-7 rounded" style={{ backgroundColor: item.color + "88" }}/>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-gray-800 leading-snug">{item.name}</p>
+                  <p className="text-[11px] text-gray-400">Item Id: {item.id}  Brand: {item.brand}</p>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <p className="text-[11px] text-gray-500">{item.note}{" "}
+                      <a href="#" className="text-[#0071CE] hover:underline">{item.action}</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Col 3 – Optimize keywords */}
+        <div className="p-5">
+          <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col3.title}</h3>
+          <p className="text-xs text-gray-500 leading-relaxed mb-4">{s.col3.body}</p>
+          <div className="space-y-4">
+            {s.col3.groups.map((grp, i) => (
+              <div key={i}>
+                <p className="text-xs text-gray-500 mb-1">Adgroup name: <a href="#" className="text-[#0071CE] hover:underline font-medium">{grp.name}</a></p>
+                <div className="flex flex-wrap gap-1 mb-1.5">
+                  {grp.tags.map(tag => (
+                    <span key={tag} className="px-2 py-0.5 rounded-full bg-gray-100 text-[11px] text-gray-600 border border-gray-200">{tag}</span>
+                  ))}
+                </div>
+                {grp.action && (
+                  <div className="flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#DBEAFE"/><path d="M12 8v4M12 16h.01" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/></svg>
+                    <p className="text-[11px] text-gray-500">{grp.action.pre}{" "}
+                      <a href="#" className="text-[#0071CE] hover:underline">{grp.action.link}</a>
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Dot pagination */}
+      <div className="flex justify-center gap-1.5 py-3 border-t border-gray-100">
+        {Array.from({ length: total }).map((_, i) => (
+          <button key={i} onClick={() => setSlide(i)}
+            className={`w-2 h-2 rounded-full transition-colors ${i === slide ? "bg-gray-500" : "bg-gray-200 hover:bg-gray-300"}`}/>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Dashboard page ─────────────────────────────────────────────────────────────
 function DashboardPage() {
   const [perfTab, setPerfTab]     = useState("Total ROAS");
   const [roasTab, setRoasTab]     = useState("Pickup");
   const [buyerType, setBuyerType] = useState("Overall");
+  const [tasks, setTasks]         = useState(INIT_TASKS);
 
   const perfSeries = [
     { data: PERF_SALES, color: "#4ABFBF" },
@@ -1187,156 +1397,202 @@ function DashboardPage() {
   );
 
   return (
-    <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
+    <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)] bg-[#F2F4F7]" style={{ padding: "35px 24px 100px" }}>
+      <div style={{ maxWidth: "1040px", margin: "0 auto" }}>
 
-      {/* Page title */}
-      <div className="flex items-center justify-between" style={{ marginBottom: "24px" }}>
-        <h1 style={{
-          fontFamily: "'Nunito Sans', sans-serif",
-          fontSize: "32px", fontWeight: 700, color: "#2e2f32",
-          letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2,
-        }}>
-          Dashboard
-        </h1>
-        <button className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 transition-colors shadow-sm">
-          <ExportIcon />
-          Export
-        </button>
-      </div>
-
-      {/* ── Filters ── */}
-      <div className="flex flex-wrap items-center gap-2 mb-5">
-        <DropFilter label="Campaigns" />
-        <DropFilter label="Categories" />
-        <DropFilter label="Brands" />
-        <div className="flex-1" />
-        <DropFilter label="Itemset: Featured" />
-        <DropFilter label="Attribution: 14 days" />
-        <div className="relative inline-flex items-center border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-600 bg-white gap-1.5 cursor-pointer hover:border-[#0071CE]">
-          <CalendarIcon />
-          Oct 1, 2024 – Oct 31, 2024
+        {/* ── Title + Export ── */}
+        <div className="flex items-center justify-between" style={{ marginBottom: "24px" }}>
+          <h1 style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "32px", fontWeight: 700, color: "#2e2f32", letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2 }}>
+            Dashboard
+          </h1>
+          <button className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 transition-colors shadow-sm">
+            <ExportIcon /> Export
+          </button>
         </div>
-      </div>
 
-      {/* ── KPI row ── */}
-      <div className="grid grid-cols-7 gap-3 mb-5">
-        {dashKPIs.map((kpi) => (
-          <div key={kpi.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3">
-            <div className="flex items-start gap-0.5 mb-1">
-              <span className="text-xs text-gray-500 leading-snug">{kpi.label}{kpi.star ? " *" : ""}</span>
-              {kpi.feat && <FeatBadge />}
-              <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
-            </div>
-            <div className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans',sans-serif" }}>
-              {kpi.value}
-            </div>
+        {/* ── Filters ── */}
+        <div className="flex flex-wrap items-center gap-2 mb-5">
+          <DropFilter label="Campaigns" />
+          <DropFilter label="Categories" />
+          <DropFilter label="Brands" />
+          <div className="flex-1" />
+          <DropFilter label="Itemset: Featured" />
+          <DropFilter label="Attribution: 14 days" />
+          <div className="relative inline-flex items-center border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-600 bg-white gap-1.5 cursor-pointer hover:border-[#0071CE]">
+            <CalendarIcon /> Oct 1, 2024 – Oct 31, 2024
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* ── Row 1: Performance Summary + ROAS Breakdown ── */}
-      <div className="grid gap-4 mb-4" style={{ gridTemplateColumns: "2fr 1fr" }}>
-
-        <ChartCard title="Performance Summary" feat
-          tabs={["Total Attributed Sales","Spend","Total ROAS"]}
-          activeTab={perfTab} onTabChange={setPerfTab}>
-          <SvgLineChart series={perfSeries} />
-        </ChartCard>
-
-        <ChartCard title="ROAS Breakdown" feat
-          tabs={["Pickup","Delivery","Store"]}
-          activeTab={roasTab} onTabChange={setRoasTab}>
-          <div className="flex flex-col items-center">
-            <SvgDonut segments={roasBreakdown} size={180}
-              centerLine1="" centerLine2="" />
-            {/* Donut labels with % */}
-            <div className="flex flex-col gap-1 mt-2 w-full px-4">
-              {roasBreakdown.map(seg => (
-                <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
-                  <span className="inline-block w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
-                  <span className="flex-1">{seg.label}</span>
-                  <span className="font-semibold text-gray-800">{seg.pct}%</span>
+        {/* ── Account Summary ── */}
+        <div className="mb-5">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-sm font-semibold text-gray-700">Account summary</span>
+            <span className="text-xs text-gray-400">Last updated Nov 1, 8:30pm PST</span>
+          </div>
+          <div className="grid grid-cols-4 gap-3">
+            {ACCT_SUMMARY.map((card) => (
+              <div key={card.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-4 flex items-center gap-4">
+                <div className="shrink-0">{card.icon}</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 mb-0.5">{card.label}</p>
+                  <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>{card.value}</p>
+                  <button className="text-xs text-[#0071CE] hover:underline mt-0.5">{card.link}</button>
                 </div>
-              ))}
-            </div>
-          </div>
-        </ChartCard>
-      </div>
-
-      {/* ── Row 2: Top 5 Campaigns + Top 5 Lineitems ── */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-
-        <ChartCard title="Top 5 Campaigns by ROAS" feat
-          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
-          <SvgHorizBars data={topCampaigns} />
-          <div className="mt-3 space-y-1">
-            {topCampaigns.map((d) => (
-              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
-                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
-                <span className="truncate">{d.name}</span>
               </div>
             ))}
           </div>
-        </ChartCard>
+        </div>
 
-        <ChartCard title="Top 5 Lineitems by ROAS" feat
-          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
-          <SvgHorizBars data={topLineitems} />
-          <div className="mt-3 space-y-1">
-            {topLineitems.map((d) => (
-              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
-                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
-                <span className="truncate">{d.name}</span>
+        {/* ── Top tasks of the day ── */}
+        {tasks.length > 0 && (
+          <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-5">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <span className="text-sm font-semibold text-gray-800">Your top tasks of the day</span>
+              <div className="flex items-center gap-1">
+                <button className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 text-gray-400"><ChevronLeft size={12}/></button>
+                <button className="w-7 h-7 flex items-center justify-center rounded border border-gray-200 hover:bg-gray-50 text-gray-400"><ChevronRight size={12}/></button>
+              </div>
+            </div>
+            {tasks.map((task, i) => (
+              <div key={task.id} className={`flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${i < tasks.length - 1 ? "border-b border-gray-100" : ""}`}>
+                <div className="shrink-0 w-8 h-8 rounded flex items-center justify-center" style={{ backgroundColor: task.iconColor + "18" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke={task.iconColor} strokeWidth="1.8"/>
+                    <path d="M9 12l2 2 4-4" stroke={task.iconColor} strokeWidth="1.8" strokeLinecap="round"/>
+                    <circle cx="19" cy="5" r="4" fill={task.iconColor}/>
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-700 flex-1">
+                  {task.pre}{" "}
+                  <a href="#" className="text-[#0071CE] hover:underline font-medium">{task.link}</a>
+                  {" "}{task.post}
+                </p>
+                <button onClick={() => setTasks(ts => ts.filter(t => t.id !== task.id))}
+                  className="flex items-center gap-1 text-xs text-[#0071CE] hover:underline shrink-0 ml-4">
+                  Dismiss <XIcon />
+                </button>
               </div>
             ))}
           </div>
-        </ChartCard>
-      </div>
+        )}
 
-      {/* ── Row 3: Top 5 Tactics + Buyer Analysis ── */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-
-        <ChartCard title="Top 5 Tactics by ROAS" feat
-          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
-          <SvgVertBars data={topTactics} />
-        </ChartCard>
-
-        <ChartCard title="Buyer Analysis" feat
-          right={
-            <div className="relative inline-flex items-center">
-              <select className="appearance-none border border-gray-200 rounded px-2 py-1 pr-5 text-xs text-gray-600 bg-white focus:outline-none">
-                <option>Overall</option>
-              </select>
-              <span className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={10}/></span>
+        {/* ── KPI metric tiles ── */}
+        <div className="grid grid-cols-7 gap-3 mb-5">
+          {dashKPIs.map((kpi) => (
+            <div key={kpi.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3">
+              <div className="flex items-start gap-0.5 mb-1">
+                <span className="text-xs text-gray-500 leading-snug">{kpi.label}{kpi.star ? " *" : ""}</span>
+                <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
+              </div>
+              <div className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans',sans-serif" }}>
+                {kpi.value}
+              </div>
             </div>
-          }>
-          <div className="flex items-center gap-4">
-            <SvgDonut segments={buyerSegments} size={160}
-              centerLine1={buyerType} centerLine2="33.2k" />
-            <div className="flex flex-col gap-2 flex-1">
-              {buyerSegments.map(seg => (
-                <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
-                  <span className="flex-1">{seg.label}</span>
-                  <InfoIcon />
+          ))}
+        </div>
+
+        {/* ── Row 1: Performance Summary + ROAS Breakdown ── */}
+        <div className="grid gap-4 mb-4" style={{ gridTemplateColumns: "2fr 1fr" }}>
+          <ChartCard title="Performance Summary"
+            tabs={["Total Attributed Sales","Spend","Total ROAS"]}
+            activeTab={perfTab} onTabChange={setPerfTab}>
+            <SvgLineChart series={perfSeries} />
+          </ChartCard>
+
+          <ChartCard title="ROAS Breakdown"
+            tabs={["Pickup","Delivery","Store"]}
+            activeTab={roasTab} onTabChange={setRoasTab}>
+            <div className="flex flex-col items-center">
+              <SvgDonut segments={roasBreakdown} size={180} centerLine1="" centerLine2="" />
+              <div className="flex flex-col gap-1 mt-2 w-full px-4">
+                {roasBreakdown.map(seg => (
+                  <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
+                    <span className="flex-1">{seg.label}</span>
+                    <span className="font-semibold text-gray-800">{seg.pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </ChartCard>
+        </div>
+
+        {/* ── Recommendations & Insights ── */}
+        <RecommendationsInsights />
+
+        {/* ── Row 2: Top 5 Campaigns + Top 5 Lineitems ── */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <ChartCard title="Top 5 Campaigns by ROAS"
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            <SvgHorizBars data={topCampaigns} />
+            <div className="mt-3 space-y-1">
+              {topCampaigns.map((d) => (
+                <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
+                  <span className="truncate">{d.name}</span>
                 </div>
               ))}
-              <p className="text-[10px] text-gray-400 mt-1 leading-snug">
-                * Buyer counts do not use fair share attribution across tactic and line item. Please do not sum these values.
-              </p>
             </div>
-          </div>
-        </ChartCard>
-      </div>
+          </ChartCard>
 
-      {/* ── Footer ── */}
-      <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
-        * Walmart Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from Walmart 1st-party data. These metrics may not reflect actual billing.
-      </p>
-      <p className="text-[10px] text-gray-400 text-center mt-3">
-        © 2000-2024 Walmart Inc. All Rights Reserved.{" "}
-        <a href="#" className="underline">Privacy and Terms</a>
-      </p>
+          <ChartCard title="Top 5 Lineitems by ROAS"
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            <SvgHorizBars data={topLineitems} />
+            <div className="mt-3 space-y-1">
+              {topLineitems.map((d) => (
+                <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
+                  <span className="truncate">{d.name}</span>
+                </div>
+              ))}
+            </div>
+          </ChartCard>
+        </div>
+
+        {/* ── Row 3: Top 5 Tactics + Buyer Analysis ── */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <ChartCard title="Top 5 Tactics by ROAS"
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            <SvgVertBars data={topTactics} />
+          </ChartCard>
+
+          <ChartCard title="Buyer Analysis"
+            right={
+              <div className="relative inline-flex items-center">
+                <select className="appearance-none border border-gray-200 rounded px-2 py-1 pr-5 text-xs text-gray-600 bg-white focus:outline-none">
+                  <option>Overall</option>
+                </select>
+                <span className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={10}/></span>
+              </div>
+            }>
+            <div className="flex items-center gap-4">
+              <SvgDonut segments={buyerSegments} size={160} centerLine1={buyerType} centerLine2="33.2k" />
+              <div className="flex flex-col gap-2 flex-1">
+                {buyerSegments.map(seg => (
+                  <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
+                    <span className="flex-1">{seg.label}</span>
+                    <InfoIcon />
+                  </div>
+                ))}
+                <p className="text-[10px] text-gray-400 mt-1 leading-snug">
+                  * Buyer counts do not use fair share attribution across tactic and line item. Please do not sum these values.
+                </p>
+              </div>
+            </div>
+          </ChartCard>
+        </div>
+
+        {/* ── Footer ── */}
+        <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
+          * Walmart Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from Walmart 1st-party data. These metrics may not reflect actual billing.
+        </p>
+        <p className="text-[10px] text-gray-400 text-center mt-3">
+          © 2000-2024 Walmart Inc. All Rights Reserved.{" "}
+          <a href="#" className="underline">Privacy and Terms</a>
+        </p>
+
+      </div>
     </main>
   );
 }
