@@ -571,8 +571,8 @@ function CreateCampaignModal({ onClose }) {
 
               {/* Campaign details card */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="text-gray-500 shrink-0 flex items-center justify-center"><GearIcon /></div>
+                <div className="flex items-start gap-2 mb-5">
+                  <div className="text-gray-500 shrink-0 mt-0.5"><GearIcon /></div>
                   <h2 className="text-base font-semibold text-gray-800 leading-snug">Campaign details</h2>
                 </div>
 
@@ -687,8 +687,8 @@ function CreateCampaignModal({ onClose }) {
               {/* ── Ad groups card ── */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
                 <div className="flex items-start justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    <div className="text-gray-500 shrink-0 flex items-center justify-center"><GridIcon /></div>
+                  <div className="flex items-start gap-2">
+                    <div className="text-gray-500 shrink-0 mt-0.5"><GridIcon /></div>
                     <div>
                       <h2 className="text-base font-semibold text-gray-800">Ad groups</h2>
                       <p className="text-xs text-gray-500 mt-0.5">Group ads by targeting, bidding, creative and more.</p>
@@ -721,8 +721,8 @@ function CreateCampaignModal({ onClose }) {
               {/* ── Measure your campaign card ── */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="text-gray-500 shrink-0 flex items-center justify-center"><BriefcaseIcon /></div>
+                  <div className="flex items-start gap-2">
+                    <div className="text-gray-500 shrink-0 mt-0.5"><BriefcaseIcon /></div>
                     <div>
                       <h2 className="text-base font-semibold text-gray-800">Measure your campaign</h2>
                       <p className="text-xs text-gray-500 mt-0.5">
@@ -772,7 +772,7 @@ function CreateCampaignModal({ onClose }) {
       {/* ── Sticky footer ── */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-8 py-4 flex justify-end z-10 shadow-md">
         <button onClick={onClose}
-          className="border border-gray-300 rounded-full px-6 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          className="bg-[#0071CE] hover:bg-[#005FA3] text-white rounded-full px-6 py-2 text-sm font-semibold transition-colors shadow-sm">
           Save and close
         </button>
       </div>
