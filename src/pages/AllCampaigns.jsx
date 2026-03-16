@@ -101,6 +101,25 @@ const XIcon = () => (
     <path d="M18 6L6 18M6 6l12 12" />
   </svg>
 );
+
+// Tooltip wrapper — hover to show a small label above the icon
+function Tooltip({ text, children }) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex cursor-help"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}>
+      {children}
+      {show && (
+        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-52 bg-gray-800 text-white text-[11px] rounded px-2.5 py-1.5 shadow-lg z-50 leading-snug pointer-events-none whitespace-normal"
+          style={{ fontFamily: "inherit" }}>
+          {text}
+          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"/>
+        </span>
+      )}
+    </span>
+  );
+}
 const ExportIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -280,7 +299,7 @@ function Sidebar({ currentPage, onNavigate }) {
       {navItems.map((item) => (
         <button key={item.label} title={!expanded ? item.label : undefined}
           onClick={() => onNavigate && onNavigate(item.page)}
-          className={`h-10 flex items-center mx-1.5 rounded-lg transition-colors whitespace-nowrap overflow-hidden
+          className={`h-10 flex items-center mx-1.5 rounded-lg transition-colors whitespace-nowrap overflow-hidden cursor-pointer
             ${currentPage === item.page ? "bg-blue-50 text-[#0071CE]" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
           {/* Fixed-width icon slot — always 46px so icon stays centered when collapsed */}
           <span className="shrink-0 w-[46px] flex items-center justify-center">{item.icon}</span>
@@ -338,7 +357,7 @@ function TopNav() {
           <div className="relative">
             <button
               onClick={() => { setShowNotifs(v => !v); setShowUser(false); }}
-              className="relative p-2 rounded-full hover:bg-white/10 transition-colors">
+              className="relative p-2 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
               <BellIcon />
               {unread > 0 && (
                 <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
@@ -352,7 +371,7 @@ function TopNav() {
                 style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
                 <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                   <h3 className="text-sm font-semibold text-gray-800">Notifications</h3>
-                  <button className="text-xs text-[#0071CE] hover:underline font-medium">Mark all read</button>
+                  <button className="text-xs text-[#0071CE] hover:underline font-medium cursor-pointer">Mark all read</button>
                 </div>
                 <div className="max-h-72 overflow-y-auto divide-y divide-gray-50">
                   {navNotifications.map(n => (
@@ -367,7 +386,7 @@ function TopNav() {
                   ))}
                 </div>
                 <div className="px-4 py-2.5 border-t border-gray-100 text-center">
-                  <button className="text-xs text-[#0071CE] hover:underline font-medium">View all notifications</button>
+                  <button className="text-xs text-[#0071CE] hover:underline font-medium cursor-pointer">View all notifications</button>
                 </div>
               </div>
             )}
@@ -382,7 +401,7 @@ function TopNav() {
           <div className="relative">
             <button
               onClick={() => { setShowUser(v => !v); setShowNotifs(false); }}
-              className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100">
+              className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100 cursor-pointer">
               <UserIcon />
             </button>
 
@@ -409,14 +428,14 @@ function TopNav() {
                     { icon: <BriefcaseIcon />, label: "My Candy Corp" },
                   ].map(item => (
                     <button key={item.label}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left">
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors text-left cursor-pointer">
                       <span className="text-gray-400 shrink-0 inline-flex">{item.icon}</span>
                       {item.label}
                     </button>
                   ))}
                 </div>
                 <div className="border-t border-gray-100 py-1">
-                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                  <button className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
                     <span className="shrink-0 inline-flex"><SignOutIcon /></span>
                     Sign out
                   </button>
@@ -1130,7 +1149,6 @@ function SvgVertBars({ data }) {
 
 // ── ChartCard wrapper ──────────────────────────────────────────────────────────
 function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, children }) {
-  const [open, setOpen] = useState(true);
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
       <div className="flex items-start justify-between mb-1">
@@ -1142,24 +1160,21 @@ function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, c
               {tabs.map(t => (
                 <button key={t}
                   onClick={() => onTabChange && onTabChange(t)}
-                  className={`text-xs px-2 py-0.5 border-b-2 transition-colors ${activeTab === t
+                  className={`text-xs px-2 py-0.5 border-b-2 transition-colors cursor-pointer ${activeTab === t
                     ? "border-[#0071CE] text-[#0071CE] font-medium"
                     : "border-transparent text-gray-400 hover:text-gray-600"}`}>
                   {t}
-                  <span className="ml-0.5 text-gray-400 inline-flex"><InfoIcon /></span>
+                  <Tooltip text={`View ${t} metric details and attribution window settings.`}>
+                    <span className="ml-0.5 text-gray-400 inline-flex"><InfoIcon /></span>
+                  </Tooltip>
                 </button>
               ))}
             </div>
           )}
         </div>
-        <div className="flex items-center gap-2 ml-4 shrink-0">
-          {right}
-          <button onClick={() => setOpen(v => !v)} className="text-gray-400 hover:text-gray-600">
-            {open ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
-          </button>
-        </div>
+        {right && <div className="flex items-center gap-2 ml-4 shrink-0">{right}</div>}
       </div>
-      {open && <div className="mt-3">{children}</div>}
+      <div className="mt-3">{children}</div>
     </div>
   );
 }
@@ -1286,7 +1301,7 @@ function RecommendationsInsights() {
         {/* Col 1 – Campaign out of budget */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col1.title}</h3>
-          <p className="text-xs text-gray-500 leading-relaxed mb-3">{s.col1.body}</p>
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-3">{s.col1.body}</p>
           <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FEF3C7"/><path d="M12 7v5M12 16h.01" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round"/></svg>
             <p className="text-xs text-amber-800">{s.col1.highlight}</p>
@@ -1312,7 +1327,7 @@ function RecommendationsInsights() {
         {/* Col 2 – Optimize items */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col2.title}</h3>
-          <p className="text-xs text-gray-500 leading-relaxed mb-4">{s.col2.body}</p>
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-4">{s.col2.body}</p>
           <div className="space-y-4">
             {s.col2.items.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
@@ -1337,7 +1352,7 @@ function RecommendationsInsights() {
         {/* Col 3 – Optimize keywords */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col3.title}</h3>
-          <p className="text-xs text-gray-500 leading-relaxed mb-4">{s.col3.body}</p>
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-4">{s.col3.body}</p>
           <div className="space-y-4">
             {s.col3.groups.map((grp, i) => (
               <div key={i}>
@@ -1436,7 +1451,7 @@ function DashboardPage() {
                 <div className="min-w-0">
                   <p className="text-xs text-gray-500 mb-0.5">{card.label}</p>
                   <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>{card.value}</p>
-                  <button className="text-xs text-[#0071CE] hover:underline mt-0.5">{card.link}</button>
+                  <button className="text-xs text-[#0071CE] hover:underline mt-0.5 cursor-pointer">{card.link}</button>
                 </div>
               </div>
             ))}
@@ -1468,7 +1483,7 @@ function DashboardPage() {
                   {" "}{task.post}
                 </p>
                 <button onClick={() => setTasks(ts => ts.filter(t => t.id !== task.id))}
-                  className="flex items-center gap-1 text-xs text-[#0071CE] hover:underline shrink-0 ml-4">
+                  className="flex items-center gap-1 text-xs text-[#0071CE] hover:underline shrink-0 ml-4 cursor-pointer">
                   Dismiss <XIcon />
                 </button>
               </div>
@@ -1482,7 +1497,9 @@ function DashboardPage() {
             <div key={kpi.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3">
               <div className="flex items-start gap-0.5 mb-1">
                 <span className="text-xs text-gray-500 leading-snug">{kpi.label}{kpi.star ? " *" : ""}</span>
-                <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
+                <Tooltip text={`${kpi.label}: attributed using a 14-day click, same-day view-through attribution window.`}>
+                  <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
+                </Tooltip>
               </div>
               <div className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans',sans-serif" }}>
                 {kpi.value}
@@ -1572,7 +1589,9 @@ function DashboardPage() {
                   <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
                     <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
                     <span className="flex-1">{seg.label}</span>
-                    <InfoIcon />
+                    <Tooltip text={`${seg.label}: unique buyer count attributed to this segment within the selected date range.`}>
+                      <InfoIcon />
+                    </Tooltip>
                   </div>
                 ))}
                 <p className="text-[10px] text-gray-400 mt-1 leading-snug">
@@ -1585,11 +1604,11 @@ function DashboardPage() {
 
         {/* ── Footer ── */}
         <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
-          * Walmart Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from Walmart 1st-party data. These metrics may not reflect actual billing.
+          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
         </p>
         <p className="text-[10px] text-gray-400 text-center mt-3">
-          © 2000-2024 Walmart Inc. All Rights Reserved.{" "}
-          <a href="#" className="underline">Privacy and Terms</a>
+          © 2025 Sample Ad Inc. All Rights Reserved.{" "}
+          <a href="#" className="underline cursor-pointer">Privacy and Terms</a>
         </p>
 
       </div>
