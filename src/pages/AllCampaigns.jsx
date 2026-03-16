@@ -63,6 +63,11 @@ const ChevronDown = ({ size = 12 }) => (
     <path d="M6 9l6 6 6-6" />
   </svg>
 );
+const ChevronUp = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+    <path d="M18 15l-6-6-6 6" />
+  </svg>
+);
 const ChevronRight = ({ size = 10 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
     <path d="M9 6l6 6-6 6" />
@@ -94,6 +99,19 @@ const WalmartSpark = () => (
 const XIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
     <path d="M18 6L6 18M6 6l12 12" />
+  </svg>
+);
+const EditIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+const TrashIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+    <path d="M10 11v6M14 11v6M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
   </svg>
 );
 const GearIcon = () => (
@@ -200,6 +218,27 @@ const columns = [
   { key: "pacing",      label: "Pacing",       sortable: true, width: "w-20" },
 ];
 
+// ── Mock data for populated modal state ────────────────────────────────────────
+const mockAdGroups = [
+  { name: "Halloween Candy Contextual Targeting - Seasonal",      type: "Contextual", color: "#E8F4FD" },
+  { name: "Halloween Candy Keyword Targeting",                     type: "Keyword",    color: "#FFF3E0" },
+  { name: "Halloween Candy Behavioral Targeting - Candy Buyers",  type: "Behavioral", color: "#F3E5F5" },
+  { name: "Halloween Candy Contextual Targeting - Candy Category",type: "Contextual", color: "#E8F5E9" },
+];
+
+const mockItems = [
+  { name: "Snickers Fun Size Variety Bag",      category: "Candy & Chocolate", gtin: "00040000525431", color: "#8B4513" },
+  { name: "M&M's Halloween Mix Bag",            category: "Candy & Chocolate", gtin: "00040000487128", color: "#CC0000" },
+  { name: "Reese's Peanut Butter Cups Bag",     category: "Candy & Chocolate", gtin: "00034000002405", color: "#FF8C00" },
+  { name: "Hershey's Milk Chocolate Bars",      category: "Candy & Chocolate", gtin: "00034000990009", color: "#5C3317" },
+  { name: "Kit Kat Miniatures Bag",             category: "Candy & Chocolate", gtin: "00034000987207", color: "#CC0000" },
+  { name: "Skittles Original Share Size",       category: "Candy & Chocolate", gtin: "00022000006201", color: "#FF4500" },
+  { name: "Jolly Rancher Hard Candy Bag",       category: "Candy & Chocolate", gtin: "00026400015014", color: "#006400" },
+  { name: "Twix Fun Size Bag",                  category: "Candy & Chocolate", gtin: "00040000523376", color: "#DAA520" },
+  { name: "Butterfinger Halloween Bag",         category: "Candy & Chocolate", gtin: "00028000128722", color: "#FFA500" },
+  { name: "Milky Way Fun Size Bag",             category: "Candy & Chocolate", gtin: "00040000544630", color: "#4B3619" },
+];
+
 // ── Sub-components ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }) {
   const styles = {
@@ -297,6 +336,184 @@ function Pagination({ current, total, perPage, onPerPageChange }) {
   );
 }
 
+// ── Populated Ad Groups Section ────────────────────────────────────────────────
+function AdGroupsPopulated() {
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <div className="mt-4">
+      {/* Scheduled header */}
+      <button
+        onClick={() => setCollapsed(v => !v)}
+        className="flex items-center gap-2 w-full text-left mb-3 group"
+      >
+        <span className="text-sm font-semibold text-gray-700">Scheduled</span>
+        <span className="text-gray-400"><InfoIcon /></span>
+        <span className="ml-auto text-gray-400 group-hover:text-gray-600">
+          {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+        </span>
+      </button>
+
+      {!collapsed && (
+        <div className="space-y-0 border border-gray-200 rounded-lg overflow-hidden">
+          {mockAdGroups.map((ag, i) => (
+            <div key={i}
+              className={`flex items-center gap-3 px-4 py-3 ${i < mockAdGroups.length - 1 ? "border-b border-gray-100" : ""} hover:bg-gray-50 transition-colors`}>
+              {/* Thumbnail placeholder */}
+              <div className="w-10 h-10 rounded shrink-0 flex items-center justify-center text-white text-xs font-bold"
+                style={{ backgroundColor: ag.color }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18M9 21V9" />
+                </svg>
+              </div>
+              {/* Name + type */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[#0071CE] hover:underline cursor-pointer truncate">{ag.name}</p>
+                <p className="text-xs text-gray-400">{ag.type}</p>
+              </div>
+              {/* Actions */}
+              <div className="flex items-center gap-3 shrink-0">
+                <button className="text-xs text-[#0071CE] hover:underline font-medium">Unschedule</button>
+                <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"><EditIcon /></button>
+                <button className="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-gray-100"><TrashIcon /></button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Populated Measure Section ──────────────────────────────────────────────────
+function MeasurePopulated() {
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  return (
+    <div className="mt-4 space-y-6">
+      {/* Items subsection */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <span className="text-sm font-semibold text-gray-800">Items</span>
+            <span className="text-xs text-gray-400 ml-2">2,304 items</span>
+          </div>
+          <button className="border border-gray-300 rounded-full px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            Add items
+          </button>
+        </div>
+
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          {/* Table header */}
+          <div className="grid text-xs font-semibold text-gray-500 bg-gray-50 border-b border-gray-200 px-3 py-2"
+            style={{ gridTemplateColumns: "1fr 200px 160px 36px" }}>
+            <span>Item</span>
+            <span>Category</span>
+            <span>GTIN</span>
+            <span />
+          </div>
+          {/* Rows */}
+          {mockItems.map((item, i) => (
+            <div key={i}
+              className={`grid items-center px-3 py-2.5 ${i < mockItems.length - 1 ? "border-b border-gray-100" : ""} hover:bg-gray-50`}
+              style={{ gridTemplateColumns: "1fr 200px 160px 36px" }}>
+              <div className="flex items-center gap-2 min-w-0">
+                {/* Color swatch thumbnail */}
+                <div className="w-8 h-8 rounded shrink-0"
+                  style={{ backgroundColor: item.color + "33", border: `2px solid ${item.color}44` }}>
+                  <div className="w-full h-full rounded flex items-center justify-center">
+                    <div className="w-4 h-4 rounded-sm" style={{ backgroundColor: item.color }} />
+                  </div>
+                </div>
+                <span className="text-xs text-gray-700 truncate">{item.name}</span>
+              </div>
+              <span className="text-xs text-gray-500">{item.category}</span>
+              <span className="text-xs text-gray-500 font-mono">{item.gtin}</span>
+              <button className="text-gray-300 hover:text-red-400 justify-self-center"><TrashIcon /></button>
+            </div>
+          ))}
+        </div>
+
+        {/* Items pagination */}
+        <div className="flex items-center justify-center gap-1 mt-3">
+          <button className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600"><ChevronLeft /></button>
+          {[1,2,3,4,5,6,7].map(p => (
+            <button key={p}
+              className={`w-6 h-6 flex items-center justify-center rounded text-xs font-medium
+                ${p === 1 ? "bg-[#0071CE] text-white" : "text-gray-500 hover:bg-gray-100"}`}>
+              {p}
+            </button>
+          ))}
+          <button className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600"><ChevronRight /></button>
+        </div>
+      </div>
+
+      {/* Brands and categories subsection */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <span className="text-sm font-semibold text-gray-800">Brands and categories</span>
+            <span className="text-xs text-gray-400 ml-2">4,608 items</span>
+            <span className="text-gray-400 ml-1 inline-flex"><InfoIcon /></span>
+          </div>
+          <button className="flex items-center gap-1 border border-gray-300 rounded-full px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            Add <ChevronDown size={10} />
+          </button>
+        </div>
+
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          {/* Brand header */}
+          <div className="px-3 py-2 bg-gray-50 border-b border-gray-200">
+            <div className="grid text-xs font-semibold text-gray-500"
+              style={{ gridTemplateColumns: "1fr 100px 36px" }}>
+              <span>Brand</span>
+              <span>Item count</span>
+              <span />
+            </div>
+          </div>
+          {[{ name: "Mars", count: "1,200" }, { name: "Hershey's", count: "980" }].map((b, i) => (
+            <div key={i}
+              className={`grid items-center px-3 py-2.5 ${i === 0 ? "border-b border-gray-100" : ""} hover:bg-gray-50`}
+              style={{ gridTemplateColumns: "1fr 100px 36px" }}>
+              <span className="text-xs text-gray-700">{b.name}</span>
+              <span className="text-xs text-gray-500">{b.count}</span>
+              <button className="text-gray-300 hover:text-red-400 justify-self-center"><TrashIcon /></button>
+            </div>
+          ))}
+
+          {/* Category header */}
+          <div className="px-3 py-2 bg-gray-50 border-t border-b border-gray-200">
+            <div className="grid text-xs font-semibold text-gray-500"
+              style={{ gridTemplateColumns: "1fr 100px 36px" }}>
+              <span>Category</span>
+              <span>Item count</span>
+              <span />
+            </div>
+          </div>
+          {[{ name: "Candy & Chocolate", count: "1,850" }, { name: "Seasonal Confections", count: "782" }].map((c, i) => (
+            <div key={i}
+              className={`grid items-center px-3 py-2.5 ${i === 0 ? "border-b border-gray-100" : ""} hover:bg-gray-50`}
+              style={{ gridTemplateColumns: "1fr 100px 36px" }}>
+              <span className="text-xs text-gray-700">{c.name}</span>
+              <span className="text-xs text-gray-500">{c.count}</span>
+              <button className="text-gray-300 hover:text-red-400 justify-self-center"><TrashIcon /></button>
+            </div>
+          ))}
+        </div>
+
+        {/* Auto-refresh toggle */}
+        <div className="flex items-center gap-2 mt-3">
+          <button
+            onClick={() => setAutoRefresh(v => !v)}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${autoRefresh ? "bg-[#0071CE]" : "bg-gray-300"}`}>
+            <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow transition-transform ${autoRefresh ? "translate-x-4.5" : "translate-x-0.5"}`} />
+          </button>
+          <span className="text-xs text-gray-600">Auto-refresh every 30 days</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Create Campaign Modal ──────────────────────────────────────────────────────
 function CreateCampaignModal({ onClose }) {
   const [campaignName, setCampaignName]       = useState("");
@@ -306,30 +523,15 @@ function CreateCampaignModal({ onClose }) {
   const [perAdGroup, setPerAdGroup]           = useState(false);
   const [startDate, setStartDate]             = useState("3/1/2024");
   const [dailyBudget, setDailyBudget]         = useState("200");
+  const [populated, setPopulated]             = useState(false);
 
   const objectives = [
-    {
-      id: "awareness",
-      icon: <EyeIcon />,
-      title: "Awareness",
-      subtitle: "Drive more impressions.",
-      detail: "Optimizes for CPM",
-    },
-    {
-      id: "engagement",
-      icon: <ClickIcon />,
-      title: "Engagement",
-      subtitle: "Get more clicks.",
-      detail: null,
-    },
-    {
-      id: "sales",
-      icon: <CartIcon />,
-      title: "Sales",
-      subtitle: "Sell more units.",
-      detail: null,
-    },
+    { id: "awareness",  icon: <EyeIcon />,   title: "Awareness",  subtitle: "Drive more impressions.", detail: "Optimizes for CPM" },
+    { id: "engagement", icon: <ClickIcon />, title: "Engagement", subtitle: "Get more clicks.",         detail: null },
+    { id: "sales",      icon: <CartIcon />,  title: "Sales",      subtitle: "Sell more units.",         detail: null },
   ];
+
+  const handlePopulate = () => setPopulated(true);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[#F2F4F7]"
@@ -345,7 +547,6 @@ function CreateCampaignModal({ onClose }) {
         <div className="flex-1 text-center text-white font-semibold text-base">
           Create campaign
         </div>
-        {/* spacer to balance cancel btn */}
         <div className="w-20" />
       </div>
 
@@ -370,14 +571,11 @@ function CreateCampaignModal({ onClose }) {
 
               {/* Campaign details card */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-
-                {/* Card heading */}
                 <div className="flex items-center gap-2 mb-5">
-                  <span className="text-gray-500"><GearIcon /></span>
-                  <h2 className="text-base font-semibold text-gray-800">Campaign details</h2>
+                  <div className="text-gray-500 shrink-0 flex items-center justify-center"><GearIcon /></div>
+                  <h2 className="text-base font-semibold text-gray-800 leading-snug">Campaign details</h2>
                 </div>
 
-                {/* Campaign name */}
                 <label className="block mb-1 text-sm font-medium text-gray-700">Campaign name</label>
                 <input
                   type="text"
@@ -387,7 +585,6 @@ function CreateCampaignModal({ onClose }) {
                   className="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#0071CE] focus:ring-1 focus:ring-[#0071CE]/30"
                 />
 
-                {/* + Description toggle */}
                 <button
                   onClick={() => setShowDescription((v) => !v)}
                   className="mt-3 flex items-center gap-1 text-sm text-[#0071CE] hover:underline font-medium">
@@ -404,10 +601,8 @@ function CreateCampaignModal({ onClose }) {
                   />
                 )}
 
-                {/* Divider */}
                 <div className="border-t border-gray-100 my-5" />
 
-                {/* Campaign objective */}
                 <h3 className="text-sm font-semibold text-gray-800 mb-1">Campaign objective</h3>
                 <p className="text-xs text-gray-500 mb-3">
                   Choose an objective. We'll use it to optimize where we deliver your ads and to which customers.
@@ -417,10 +612,7 @@ function CreateCampaignModal({ onClose }) {
                     <button key={obj.id}
                       onClick={() => setObjective(obj.id)}
                       className={`w-full flex flex-col px-4 py-3 rounded border cursor-pointer transition-colors text-left
-                        ${objective === obj.id
-                          ? "border-gray-800 bg-white"
-                          : "border-gray-200 bg-white hover:border-gray-300"}`}>
-                      {/* Title row — icon always level with title text */}
+                        ${objective === obj.id ? "border-gray-800 bg-white" : "border-gray-200 bg-white hover:border-gray-300"}`}>
                       <span className="flex items-center gap-2">
                         <span className={`shrink-0 ${objective === obj.id ? "text-gray-700" : "text-gray-400"}`}>
                           {obj.icon}
@@ -428,7 +620,6 @@ function CreateCampaignModal({ onClose }) {
                         <span className="text-sm font-semibold text-gray-800">{obj.title}</span>
                         <span className="text-sm text-gray-500">· {obj.subtitle}</span>
                       </span>
-                      {/* Detail line indented to align under title text */}
                       {obj.detail && (
                         <span className="text-xs text-gray-400 mt-0.5 pl-7">{obj.detail}</span>
                       )}
@@ -436,11 +627,9 @@ function CreateCampaignModal({ onClose }) {
                   ))}
                 </div>
 
-                {/* Divider */}
                 <div className="border-t border-gray-100 my-5" />
 
-                {/* Schedule & budget */}
-                <h3 className="text-sm font-semibold text-gray-800 mb-1">Campaign schedule and budget</h3>
+                <h3 className="text-sm font-semibold text-gray-800 mb-1">Campaign schedule and budget and delivery speed</h3>
                 <p className="text-xs text-gray-500 mb-3">
                   You can apply these settings to your campaign or set them for each ad group instead.
                 </p>
@@ -452,7 +641,6 @@ function CreateCampaignModal({ onClose }) {
                 </label>
 
                 <div className={`space-y-4 ${perAdGroup ? "opacity-40 pointer-events-none" : ""}`}>
-                  {/* Schedule row */}
                   <div className="flex items-start gap-8">
                     <span className="text-sm font-medium text-gray-700 w-20 pt-2 shrink-0">Schedule</span>
                     <div>
@@ -474,7 +662,6 @@ function CreateCampaignModal({ onClose }) {
                     </div>
                   </div>
 
-                  {/* Budget row */}
                   <div className="flex items-start gap-8">
                     <span className="text-sm font-medium text-gray-700 w-20 pt-2 shrink-0">Budget</span>
                     <div>
@@ -488,9 +675,10 @@ function CreateCampaignModal({ onClose }) {
                   </div>
                 </div>
 
-                {/* Save button */}
                 <div className="flex justify-end mt-6">
-                  <button className="border border-gray-300 rounded-full px-5 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                  <button
+                    onClick={handlePopulate}
+                    className="border border-gray-300 rounded-full px-5 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                     Save
                   </button>
                 </div>
@@ -500,37 +688,46 @@ function CreateCampaignModal({ onClose }) {
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-500"><GridIcon /></span>
+                    <div className="text-gray-500 shrink-0 flex items-center justify-center"><GridIcon /></div>
                     <div>
                       <h2 className="text-base font-semibold text-gray-800">Ad groups</h2>
                       <p className="text-xs text-gray-500 mt-0.5">Group ads by targeting, bidding, creative and more.</p>
                     </div>
                   </div>
-                  <button className="border border-gray-300 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap">
+                  <button
+                    onClick={handlePopulate}
+                    className="border border-gray-300 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap">
                     Create ad group
                   </button>
                 </div>
 
-                <div className="mt-4 border-2 border-dashed border-gray-200 rounded-lg py-6 text-center text-sm text-gray-400">
-                  No ad groups yet
-                </div>
-
-                <div className="mt-3 flex items-start gap-2 bg-blue-50 rounded-lg px-4 py-3">
-                  <span className="text-[#0071CE] mt-0.5 shrink-0"><PinIcon /></span>
-                  <p className="text-xs text-blue-800">
-                    <span className="font-semibold">Tip:</span> Try creating multiple ad groups with different options to learn what works the best.
-                  </p>
-                </div>
+                {populated ? (
+                  <AdGroupsPopulated />
+                ) : (
+                  <>
+                    <div className="mt-4 border-2 border-dashed border-gray-200 rounded-lg py-6 text-center text-sm text-gray-400">
+                      No ad groups yet
+                    </div>
+                    <div className="mt-3 flex items-start gap-2 bg-blue-50 rounded-lg px-4 py-3">
+                      <span className="text-[#0071CE] mt-0.5 shrink-0"><PinIcon /></span>
+                      <p className="text-xs text-blue-800">
+                        <span className="font-semibold">Tip:</span> Try creating multiple ad groups with different options to learn what works the best.
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* ── Measure your campaign card ── */}
               <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-500"><BriefcaseIcon /></span>
+                    <div className="text-gray-500 shrink-0 flex items-center justify-center"><BriefcaseIcon /></div>
                     <div>
                       <h2 className="text-base font-semibold text-gray-800">Measure your campaign</h2>
-                      <p className="text-xs text-gray-500 mt-0.5">Add the items, brands or categories you want to track.</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {populated ? "Tracking 6,912 items" : "Add the items, brands or categories you want to track."}
+                      </p>
                     </div>
                   </div>
                   <button className="flex items-center gap-1 border border-gray-300 rounded-full px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap">
@@ -538,6 +735,8 @@ function CreateCampaignModal({ onClose }) {
                     <ChevronDown size={11} />
                   </button>
                 </div>
+
+                {populated && <MeasurePopulated />}
               </div>
 
             </div>{/* end left column */}
@@ -566,9 +765,9 @@ function CreateCampaignModal({ onClose }) {
               </div>
             </div>
 
-          </div>{/* end two-column */}
+          </div>
         </div>
-      </div>{/* end scrollable body */}
+      </div>
 
       {/* ── Sticky footer ── */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-8 py-4 flex justify-end z-10 shadow-md">
@@ -608,15 +807,12 @@ export default function AllCampaigns() {
       <TopNav />
       <Sidebar />
 
-      {/* Create Campaign Modal */}
       {showCreateModal && (
         <CreateCampaignModal onClose={() => setCreate(false)} />
       )}
 
-      {/* Main content */}
       <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
 
-        {/* Page header */}
         <div className="flex items-center justify-between" style={{ marginBottom: "30px" }}>
           <h1 style={{
             fontFamily: "'Nunito Sans', sans-serif",
@@ -636,10 +832,7 @@ export default function AllCampaigns() {
           </button>
         </div>
 
-        {/* Table card */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-
-          {/* Toolbar */}
           <div className="flex items-center justify-end gap-3 px-4 py-3 border-b border-gray-100">
             <div className="relative">
               <select value={statusFilter} onChange={(e) => setStatus(e.target.value)}
@@ -660,7 +853,6 @@ export default function AllCampaigns() {
             </div>
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
