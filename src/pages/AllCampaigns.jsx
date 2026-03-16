@@ -414,26 +414,25 @@ function CreateCampaignModal({ onClose }) {
                 </p>
                 <div className="space-y-2">
                   {objectives.map((obj) => (
-                    <label key={obj.id}
-                      className={`flex items-start gap-3 px-4 py-3 rounded border cursor-pointer transition-colors
+                    <button key={obj.id}
+                      onClick={() => setObjective(obj.id)}
+                      className={`w-full flex flex-col px-4 py-3 rounded border cursor-pointer transition-colors text-left
                         ${objective === obj.id
                           ? "border-gray-800 bg-white"
                           : "border-gray-200 bg-white hover:border-gray-300"}`}>
-                      <input type="radio" name="objective" value={obj.id}
-                        checked={objective === obj.id}
-                        onChange={() => setObjective(obj.id)}
-                        className="mt-0.5 accent-[#0071CE]" />
-                      <span className={`mt-0.5 ${objective === obj.id ? "text-gray-700" : "text-gray-400"}`}>
-                        {obj.icon}
-                      </span>
-                      <span>
+                      {/* Title row — icon always level with title text */}
+                      <span className="flex items-center gap-2">
+                        <span className={`shrink-0 ${objective === obj.id ? "text-gray-700" : "text-gray-400"}`}>
+                          {obj.icon}
+                        </span>
                         <span className="text-sm font-semibold text-gray-800">{obj.title}</span>
-                        <span className="text-sm text-gray-500"> · {obj.subtitle}</span>
-                        {obj.detail && (
-                          <p className="text-xs text-gray-400 mt-0.5">{obj.detail}</p>
-                        )}
+                        <span className="text-sm text-gray-500">· {obj.subtitle}</span>
                       </span>
-                    </label>
+                      {/* Detail line indented to align under title text */}
+                      {obj.detail && (
+                        <span className="text-xs text-gray-400 mt-0.5 pl-7">{obj.detail}</span>
+                      )}
+                    </button>
                   ))}
                 </div>
 
