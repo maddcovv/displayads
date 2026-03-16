@@ -155,7 +155,7 @@ function Sidebar() {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
       style={{
-        width: expanded ? "200px" : "52px",
+        width: expanded ? "448px" : "52px",
         transition: "width 200ms ease",
       }}
       className="fixed left-0 top-[52px] bottom-0 bg-white border-r border-gray-200 flex flex-col pt-3 gap-1 z-30 overflow-hidden shadow-sm"
