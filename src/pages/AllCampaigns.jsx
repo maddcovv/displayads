@@ -1387,6 +1387,368 @@ function RecommendationsInsights() {
   );
 }
 
+// ── Performance page data ──────────────────────────────────────────────────────
+const PERF_DAYS = Array.from({ length: 31 }, (_, i) => {
+  const d = new Date(2022, 0, 1 + i);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+});
+
+const AREA_IMPRESSIONS = [130,162,180,242,285,305,262,202,182,172,192,225,252,232,212,202,218,232,242,262,282,292,272,252,242,262,282,288,265,232,198];
+const AREA_ADSPEND     = [42,52,62,82,97,102,87,67,57,52,62,77,87,77,67,62,67,74,80,87,94,98,90,80,74,82,92,94,87,74,62];
+
+const perfCampaignRows = [
+  { name: "Halloween Candy Cross Device Auto All Positions Display",     duration: "01/18/2022 – 02/18/2022", status: "Live",      impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+  { name: "Easter Candy Campaign Spring Seasonal Contextual Display",    duration: "01/18/2022 – 02/18/2022", status: "Live",      impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+  { name: "Valentine's Day Candy Hearts Premium Placement",              duration: "01/18/2022 – 02/18/2022", status: "Live",      impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+  { name: "Christmas Holiday Cookies End Cap Display",                   duration: "01/18/2022 – 02/18/2022", status: "Live",      impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+  { name: "Back to School Snacks Branded Keyword Targeting",             duration: "12/18/2021 – 01/18/2022", status: "Completed", impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+  { name: "Summer Party Mix Contextual Run of Site Brand Awareness",     duration: "01/18/2022 – 02/18/2022", status: "Live",      impressions: "1,000,000", spend: "$1,000.00", totalSales: "$9,999.00", storeSales: "$9,999.00", pickupSales: "$9,999.00", deliverySales: "$9,999.00" },
+];
+
+// ── SVG dual-axis area chart ───────────────────────────────────────────────────
+function SvgAreaChart({ series }) {
+  const W = 680, H = 260;
+  const PAD = { top: 16, right: 56, bottom: 36, left: 60 };
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const n  = PERF_DAYS.length;
+
+  // Per-series min/max (always start at 0)
+  const scales = series.map(s => ({ min: 0, max: Math.max(...s.data) * 1.18 }));
+
+  const xPos = i => PAD.left + (i / (n - 1)) * CW;
+  const yPos = (v, si) => {
+    const { min, max } = scales[si];
+    return PAD.top + CH - ((v - min) / (max - min || 1)) * CH;
+  };
+
+  // Smooth cubic bezier path
+  const makePath = (data, si) => {
+    const pts = data.map((v, i) => [xPos(i), yPos(v, si)]);
+    let d = `M ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const dx = (pts[i + 1][0] - pts[i][0]) / 3;
+      d += ` C ${pts[i][0] + dx} ${pts[i][1]} ${pts[i + 1][0] - dx} ${pts[i + 1][1]} ${pts[i + 1][0]} ${pts[i + 1][1]}`;
+    }
+    return d;
+  };
+  const makeArea = (data, si) => {
+    const line = makePath(data, si);
+    return `${line} L ${xPos(n - 1)} ${PAD.top + CH} L ${xPos(0)} ${PAD.top + CH} Z`;
+  };
+
+  // Y-axis ticks
+  const yLeft  = [0, 500, 1000, 1500, 2000, 2500, 3000].map(v => ({ v, label: `${(v / 1000).toFixed(0)}${v ? "K" : ""}` }));
+  const yRight = series[1] ? [0, 2, 4, 6, 8, 10, 12].map(v => ({ v: v * 10, label: `$${v * 10}` })) : [];
+  const xTicks = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30];
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ overflow: "visible" }}>
+      <defs>
+        {series.map((s, si) => (
+          <linearGradient key={si} id={`areaGrad${si}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor={s.color} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={s.color} stopOpacity="0.02" />
+          </linearGradient>
+        ))}
+      </defs>
+
+      {/* Horizontal grid */}
+      {yLeft.map(t => (
+        <line key={t.v} x1={PAD.left} y1={yPos(t.v, 0)} x2={PAD.left + CW} y2={yPos(t.v, 0)}
+          stroke="#e5e7eb" strokeWidth="1" />
+      ))}
+
+      {/* Filled areas (back → front) */}
+      {[...series].reverse().map((s, ri) => {
+        const si = series.length - 1 - ri;
+        return <path key={si} d={makeArea(s.data, si)} fill={`url(#areaGrad${si})`} />;
+      })}
+
+      {/* Lines */}
+      {series.map((s, si) => (
+        <path key={si} d={makePath(s.data, si)} fill="none"
+          stroke={s.color} strokeWidth="2" strokeLinejoin="round" />
+      ))}
+
+      {/* Left Y-axis labels */}
+      {yLeft.map(t => (
+        <text key={t.v} x={PAD.left - 8} y={yPos(t.v, 0) + 4}
+          textAnchor="end" fontSize="10" fill="#9ca3af">{t.label}</text>
+      ))}
+
+      {/* Right Y-axis labels (series 1 scale) */}
+      {series[1] && yRight.map(t => {
+        const { min, max } = scales[1];
+        const pct = (t.v - min) / (max - min || 1);
+        const y = PAD.top + CH - pct * CH;
+        return (
+          <text key={t.v} x={PAD.left + CW + 8} y={y + 4}
+            textAnchor="start" fontSize="10" fill={series[1].color}>{t.label}</text>
+        );
+      })}
+
+      {/* X-axis baseline */}
+      <line x1={PAD.left} y1={PAD.top + CH} x2={PAD.left + CW} y2={PAD.top + CH}
+        stroke="#e5e7eb" strokeWidth="1" />
+
+      {/* X-axis labels */}
+      {xTicks.map(i => (
+        <text key={i} x={xPos(i)} y={PAD.top + CH + 18}
+          textAnchor="middle" fontSize="10" fill="#9ca3af">{PERF_DAYS[i]}</text>
+      ))}
+    </svg>
+  );
+}
+
+// ── Performance (Analytics) page ───────────────────────────────────────────────
+function PerformancePage() {
+  const [attrib,      setAttrib]      = useState(14);
+  const [alert,       setAlert]       = useState(true);
+  const [activeKeys,  setActiveKeys]  = useState(["impressions", "adspend"]);
+  const [tableSearch, setTableSearch] = useState("");
+  const [tableStatus, setTableStatus] = useState("All statuses");
+  const [checked,     setChecked]     = useState(perfCampaignRows.map(() => true));
+
+  const perfMetrics = [
+    { key: "impressions", label: "Impressions",            value: "13,876,267", color: "#0071CE", data: AREA_IMPRESSIONS },
+    { key: "adspend",     label: "Ad Spend",               value: "$123,654",   color: "#6BBF6B", data: AREA_ADSPEND },
+    { key: "totalSales",  label: "Total Attributed Sales", value: "$123,654",   color: "#F59E0B", data: AREA_IMPRESSIONS.map(v => Math.round(v * 0.88)) },
+    { key: "storeSales",  label: "Store Attributed Sales", value: "$123,654",   color: "#8B5CF6", data: AREA_IMPRESSIONS.map(v => Math.round(v * 0.6))  },
+    { key: "pickupSales", label: "Pickup Sales",           value: "$123,654",   color: "#06B6D4", data: AREA_IMPRESSIONS.map(v => Math.round(v * 0.38)) },
+  ];
+
+  const toggleMetric = (key) => {
+    setActiveKeys(prev =>
+      prev.includes(key)
+        ? prev.length > 1 ? prev.filter(k => k !== key) : prev   // keep at least 1
+        : [...prev.slice(-1), key]                                 // swap oldest, keep 2
+    );
+  };
+
+  const chartSeries = activeKeys.map(k => {
+    const m = perfMetrics.find(m => m.key === k);
+    return { color: m.color, data: m.data };
+  });
+
+  const tableCols = [
+    { key: "name",          label: "Campaigns",               w: "min-w-[240px] max-w-[280px]" },
+    { key: "status",        label: "Status",                  w: "min-w-[90px]"  },
+    { key: "impressions",   label: "Impressions",             w: "min-w-[110px]" },
+    { key: "spend",         label: "Ad spend",                w: "min-w-[100px]" },
+    { key: "totalSales",    label: "Total attributed sales",  w: "min-w-[150px]" },
+    { key: "storeSales",    label: "Store attributed sales",  w: "min-w-[150px]" },
+    { key: "pickupSales",   label: "Pickup sales",            w: "min-w-[110px]" },
+    { key: "deliverySales", label: "Delivery sales",          w: "min-w-[110px]" },
+  ];
+
+  const filteredRows = perfCampaignRows.filter(r =>
+    r.name.toLowerCase().includes(tableSearch.toLowerCase()) &&
+    (tableStatus === "All statuses" || r.status === tableStatus)
+  );
+
+  return (
+    <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)] bg-[#F2F4F7]" style={{ padding: "35px 24px 100px" }}>
+      <div style={{ maxWidth: "1040px", margin: "0 auto" }}>
+
+        {/* ── Title row ── */}
+        <div className="flex items-center justify-between mb-5">
+          <h1 style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "32px", fontWeight: 700, color: "#2e2f32", letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2 }}>
+            Campaign performance
+          </h1>
+          <div className="flex items-center gap-2">
+            {/* Attribution toggle */}
+            <div className="flex rounded border border-gray-300 overflow-hidden text-sm bg-white shadow-sm">
+              {[14, 30].map(d => (
+                <button key={d} onClick={() => setAttrib(d)}
+                  className={`px-3 py-1.5 font-medium transition-colors cursor-pointer ${attrib === d ? "bg-[#0071CE] text-white" : "text-gray-600 hover:bg-gray-50"}`}>
+                  {d} day attribution
+                </button>
+              ))}
+            </div>
+            {/* Date picker */}
+            <div className="flex items-center gap-1.5 border border-gray-300 rounded px-3 py-1.5 bg-white text-sm text-gray-600 cursor-pointer hover:border-[#0071CE] shadow-sm">
+              <CalendarIcon /> Jan 1, 2022 – Jan 31, 2022 <ChevronDown size={11} />
+            </div>
+          </div>
+        </div>
+
+        {/* ── Alert banner ── */}
+        {alert && (
+          <div className="flex items-center gap-3 bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="shrink-0">
+              <circle cx="12" cy="12" r="10" stroke="#EF4444" strokeWidth="2"/>
+              <path d="M12 8v4M12 16h.01" stroke="#EF4444" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+            <p className="text-sm text-red-700 flex-1">Alert message — some campaigns may have limited data for the selected attribution window.</p>
+            <button onClick={() => setAlert(false)} className="text-red-400 hover:text-red-600 cursor-pointer shrink-0"><XIcon /></button>
+          </div>
+        )}
+
+        {/* ── All campaigns chart card ── */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm mb-5 overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <span className="text-sm font-bold text-gray-800">All campaigns</span>
+            <span className="text-xs text-gray-400">Last updated Feb 2, 2022</span>
+          </div>
+          <div className="flex">
+
+            {/* Metric selector panel */}
+            <div className="shrink-0 border-r border-gray-100" style={{ width: "210px" }}>
+              {perfMetrics.map(m => {
+                const isActive = activeKeys.includes(m.key);
+                return (
+                  <div key={m.key} onClick={() => toggleMetric(m.key)}
+                    className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors border-b border-gray-50"
+                    style={{ borderLeft: isActive ? `3px solid ${m.color}` : "3px solid transparent" }}>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold mb-0.5 leading-none" style={{ color: isActive ? m.color : "#374151" }}>{m.value}</p>
+                      <p className="text-[11px] text-gray-500 leading-tight mt-0.5">{m.label}</p>
+                    </div>
+                    {isActive
+                      ? <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: m.color }} />
+                      : <span className="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center shrink-0 text-gray-400">
+                          <svg width="8" height="8" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
+                        </span>
+                    }
+                  </div>
+                );
+              })}
+              {/* Expand/collapse row */}
+              <div className="flex items-center justify-center gap-8 px-4 py-2.5 border-t border-gray-100">
+                <button className="text-gray-400 hover:text-gray-600 cursor-pointer"><ChevronDown size={14}/></button>
+                <button className="text-gray-400 hover:text-gray-600 cursor-pointer"><ChevronUp size={14}/></button>
+              </div>
+            </div>
+
+            {/* Chart area */}
+            <div className="flex-1 px-5 py-5">
+              {/* Legend */}
+              <div className="flex items-center gap-4 mb-3">
+                {activeKeys.map(k => {
+                  const m = perfMetrics.find(m => m.key === k);
+                  return (
+                    <div key={k} className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <span className="w-3 h-3 rounded-sm shrink-0" style={{ backgroundColor: m.color }}/>
+                      {m.label}
+                    </div>
+                  );
+                })}
+              </div>
+              <SvgAreaChart series={chartSeries} />
+            </div>
+          </div>
+        </div>
+
+        {/* ── Metric view table ── */}
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-5">
+
+          {/* Table toolbar */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100">
+            <span className="text-sm font-bold text-gray-800 flex-1">Metric view</span>
+            <div className="relative">
+              <input value={tableSearch} onChange={e => setTableSearch(e.target.value)}
+                placeholder="Search campaign / line item"
+                className="border border-gray-200 rounded px-3 py-1.5 pl-8 text-xs text-gray-700 focus:outline-none focus:border-[#0071CE] w-52"/>
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></span>
+            </div>
+            <div className="relative inline-flex items-center">
+              <select value={tableStatus} onChange={e => setTableStatus(e.target.value)}
+                className="appearance-none border border-gray-200 rounded px-3 py-1.5 pr-7 text-xs text-gray-600 bg-white focus:outline-none focus:border-[#0071CE] cursor-pointer">
+                <option>All statuses</option>
+                <option>Live</option>
+                <option>Completed</option>
+              </select>
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={10}/></span>
+            </div>
+            <button className="border border-gray-200 rounded px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 cursor-pointer">Export</button>
+            <button className="text-gray-400 hover:text-gray-600 cursor-pointer p-1">
+              <svg width="4" height="16" viewBox="0 0 4 16" fill="currentColor">
+                <circle cx="2" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-gray-200 bg-gray-50 text-left">
+                  <th className="w-10 px-3 py-3">
+                    <input type="checkbox" className="cursor-pointer"
+                      checked={checked.every(Boolean)}
+                      onChange={e => setChecked(checked.map(() => e.target.checked))} />
+                  </th>
+                  {tableCols.map(col => (
+                    <th key={col.key} className={`${col.w} px-3 py-3 font-semibold text-gray-600 whitespace-nowrap`}>
+                      <span className="inline-flex items-center gap-1 cursor-pointer hover:text-gray-800">
+                        {col.label}
+                        <svg width="8" height="10" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                          <path d="M4 1v10M1 4l3-3 3 3M1 8l3 3 3-3"/>
+                        </svg>
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {/* Summary label row */}
+                <tr className="border-b border-gray-100 bg-blue-50/40">
+                  <td className="px-3 py-2.5" />
+                  <td className="px-3 py-2.5">
+                    <span className="text-xs font-semibold text-gray-700 inline-flex items-center gap-1">
+                      Campaigns ({filteredRows.length}/{perfCampaignRows.length})
+                      <ChevronDown size={10}/>
+                    </span>
+                  </td>
+                  <td colSpan={7} />
+                </tr>
+                {filteredRows.map((row, i) => (
+                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
+                    <td className="px-3 py-3">
+                      <input type="checkbox" className="cursor-pointer"
+                        checked={checked[perfCampaignRows.indexOf(row)] ?? true}
+                        onChange={e => {
+                          const next = [...checked];
+                          next[perfCampaignRows.indexOf(row)] = e.target.checked;
+                          setChecked(next);
+                        }} />
+                    </td>
+                    <td className="px-3 py-3 min-w-[240px] max-w-[280px]">
+                      <p className="text-[#0071CE] font-medium hover:underline cursor-pointer leading-snug line-clamp-2">{row.name}</p>
+                      <p className="text-gray-400 text-[10px] mt-0.5">Duration: {row.duration}</p>
+                    </td>
+                    <td className="px-3 py-3">
+                      <span className={`px-2 py-0.5 rounded text-[11px] font-medium ${row.status === "Live" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                        {row.status}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.impressions}</td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.spend}</td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.totalSales}</td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.storeSales}</td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.pickupSales}</td>
+                    <td className="px-3 py-3 text-gray-700 tabular-nums">{row.deliverySales}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
+          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
+        </p>
+        <p className="text-[10px] text-gray-400 text-center mt-3">
+          © 2025 Sample Ad Inc. All Rights Reserved.{" "}
+          <a href="#" className="underline cursor-pointer">Privacy and Terms</a>
+        </p>
+      </div>
+    </main>
+  );
+}
+
 // ── Dashboard page ─────────────────────────────────────────────────────────────
 function DashboardPage() {
   const [perfTab, setPerfTab]     = useState("Total ROAS");
@@ -1646,7 +2008,8 @@ export default function AllCampaigns() {
         <CreateCampaignModal onClose={() => setCreate(false)} />
       )}
 
-      {page === "dashboard" && <DashboardPage />}
+      {page === "dashboard"  && <DashboardPage />}
+      {page === "analytics"  && <PerformancePage />}
 
       {page === "campaigns" && (
         <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
