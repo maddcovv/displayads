@@ -199,11 +199,11 @@ const campaigns = [
 ];
 
 const navItems = [
-  { icon: <HomeIcon />,     label: "Home" },
-  { icon: <ChartIcon />,    label: "Analytics" },
-  { icon: <CampaignIcon />, label: "Campaigns", active: true },
-  { icon: <CreativeIcon />, label: "Creatives" },
-  { icon: <ReportIcon />,   label: "Reports" },
+  { icon: <HomeIcon />,     label: "Home",      page: "dashboard" },
+  { icon: <ChartIcon />,    label: "Analytics", page: "analytics" },
+  { icon: <CampaignIcon />, label: "Campaigns", page: "campaigns" },
+  { icon: <CreativeIcon />, label: "Creatives", page: "creatives" },
+  { icon: <ReportIcon />,   label: "Reports",   page: "reports"   },
 ];
 
 const columns = [
@@ -256,7 +256,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function Sidebar() {
+function Sidebar({ currentPage, onNavigate }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <aside
@@ -267,8 +267,9 @@ function Sidebar() {
     >
       {navItems.map((item) => (
         <button key={item.label} title={!expanded ? item.label : undefined}
+          onClick={() => onNavigate && onNavigate(item.page)}
           className={`h-10 flex items-center gap-3 px-3 mx-1.5 rounded-lg transition-colors whitespace-nowrap
-            ${item.active ? "bg-blue-50 text-[#0071CE]" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
+            ${currentPage === item.page ? "bg-blue-50 text-[#0071CE]" : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"}`}>
           <span className="shrink-0">{item.icon}</span>
           <span className={`text-sm font-medium transition-opacity duration-150 ${expanded ? "opacity-100" : "opacity-0"}`}
             style={{ fontFamily: "Bogle, 'Nunito Sans', sans-serif" }}>
@@ -781,18 +782,449 @@ function CreateCampaignModal({ onClose }) {
   );
 }
 
+// ── Dashboard data ─────────────────────────────────────────────────────────────
+const dashKPIs = [
+  { label: "Impressions",                          feat: false, value: "8,718,618" },
+  { label: "Total Attributed Sales",               feat: true,  value: "$2,892,009" },
+  { label: "Total Attributed Transactions",        feat: true,  value: "5,816" },
+  { label: "Total Attributed Units",               feat: true,  value: "5,942" },
+  { label: "Total ROAS",                           feat: true,  value: "$39.73" },
+  { label: "eCPM",                                 feat: false, value: "$8.35" },
+  { label: "Spend",                                feat: false, value: "$72,799", star: true },
+];
+
+const PERF_SALES  = [180,185,210,195,175,165,155,220,280,265,255,240,175,180,210,250,270,260,240,225,210,195,180,210,245,265,285,300,278,255,235];
+const PERF_SPEND  = [2.1,2.2,2.5,2.3,2.1,2.0,1.9,2.7,3.4,3.2,3.1,2.9,2.2,2.2,2.5,3.0,3.2,3.1,2.9,2.7,2.5,2.3,2.4,2.6,2.9,3.2,3.4,3.6,3.3,3.0,2.8];
+const PERF_ROAS   = [45,47,52,48,44,42,40,54,65,62,60,58,44,45,49,58,62,60,55,52,48,45,47,52,57,62,66,70,65,60,55];
+const PERF_XLABELS = ["Oct 2024","Oct 3","Oct 5","Oct 7","Oct 9","Oct 11","Oct 13","Oct 15","Oct 17","Oct 19","Oct 21","Oct 23","Oct 25","Oct 27","Oct 29"];
+
+const topCampaigns = [
+  { name: "Halloween Candy Seasonal Display, Oct 1–Nov 1 2024",   value: 80.73, color: "#8B5CF6" },
+  { name: "Halloween Candy Contextual, Oct 1–Nov 1 2024",         value: 58.63, color: "#6BBF6B" },
+  { name: "Back to School Snacks, Jul–Sep 2024",                   value: 1.74,  color: "#4ABFBF" },
+  { name: "Easter Candy Campaign, Mar–Apr 2025",                   value: 1.66,  color: "#F59E0B" },
+  { name: "Valentine's Candy Promo, Jan–Feb 2025",                 value: 0.43,  color: "#06B6D4" },
+];
+
+const topLineitems = [
+  { name: "Contextual targeting",                                                      value: 157.15, color: "#8B5CF6" },
+  { name: "Contextual Targeting - TV",                                                 value: 151.17, color: "#6BBF6B" },
+  { name: "Branded keyword Targeting (candy Brand)",                                   value: 110.17, color: "#4ABFBF" },
+  { name: "Non-Branded keyword Targeting (TV + confections + Movie + Game terms)",     value: 41.49,  color: "#F59E0B" },
+  { name: "Run of Site (Brand Awareness)",                                             value: 39.48,  color: "#06B6D4" },
+];
+
+const topTactics = [
+  { label: "Contextual",   value: 72.34, color: "#8B5CF6" },
+  { label: "Keyword",      value: 42.58, color: "#6BBF6B" },
+  { label: "Broad Reach",  value: 25.87, color: "#4ABFBF" },
+  { label: "Audience",     value: 9.34,  color: "#F59E0B" },
+];
+
+const roasBreakdown = [
+  { label: "Pickup",   pct: 45, color: "#4ABFBF" },
+  { label: "Delivery", pct: 42, color: "#8B5CF6" },
+  { label: "Store",    pct: 13, color: "#6BBF6B" },
+];
+
+const buyerSegments = [
+  { label: "New Buyers",                  pct: 89, color: "#4ABFBF" },
+  { label: "Purchased 1 time",            pct: 5,  color: "#F59E0B" },
+  { label: "Purchased 2 times",           pct: 4,  color: "#6BBF6B" },
+  { label: "Purchased 3 times and above", pct: 2,  color: "#8B5CF6" },
+];
+
+// ── Dashboard chart components ─────────────────────────────────────────────────
+
+function FeatBadge() {
+  return (
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100 text-[#0071CE] ml-1.5">
+      Feat.
+    </span>
+  );
+}
+
+function SvgDonut({ segments, centerLine1, centerLine2, size = 180 }) {
+  const cx = size / 2, cy = size / 2;
+  const r = size * 0.35;
+  const sw = size * 0.18;
+  const circ = 2 * Math.PI * r;
+  let cum = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {segments.map((seg, i) => {
+        const dash = (seg.pct / 100) * circ;
+        const gap  = circ - dash;
+        const rot  = (cum / 100) * 360 - 90;
+        cum += seg.pct;
+        return (
+          <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+            stroke={seg.color} strokeWidth={sw}
+            strokeDasharray={`${dash} ${gap}`}
+            transform={`rotate(${rot} ${cx} ${cy})`} />
+        );
+      })}
+      {centerLine1 && (
+        <text x={cx} y={cy - size * 0.06} textAnchor="middle"
+          fontSize={size * 0.07} fill="#6b7280">{centerLine1}</text>
+      )}
+      {centerLine2 && (
+        <text x={cx} y={cy + size * 0.1} textAnchor="middle"
+          fontSize={size * 0.14} fontWeight="700" fill="#2e2f32">{centerLine2}</text>
+      )}
+    </svg>
+  );
+}
+
+function SvgLineChart({ series }) {
+  const W = 540, H = 195;
+  const pL = 52, pR = 52, pT = 12, pB = 30;
+  const plotW = W - pL - pR, plotH = H - pT - pB;
+
+  const getX = (i, len) => pL + (i / (len - 1)) * plotW;
+
+  const yLabels = ["$0","$50K","$100K","$150K","$200K","$250K","$300K"];
+  const yRLabels = ["$0.00","$2K","$4K","$6K","$8K","$10K","$12K"];
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ overflow: "visible" }}>
+      {/* Horizontal grid */}
+      {[0,1,2,3,4,5,6].map(i => {
+        const y = pT + ((6 - i) / 6) * plotH;
+        return <line key={i} x1={pL} y1={y} x2={W - pR} y2={y} stroke="#f3f4f6" strokeWidth="1"/>;
+      })}
+      {/* Left Y labels */}
+      {yLabels.map((lbl, i) => {
+        const y = pT + ((6 - i) / 6) * plotH;
+        return <text key={i} x={pL - 4} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">{lbl}</text>;
+      })}
+      {/* Right Y labels */}
+      {yRLabels.map((lbl, i) => {
+        const y = pT + ((6 - i) / 6) * plotH;
+        return <text key={i} x={W - pR + 4} y={y + 4} textAnchor="start" fontSize="9" fill="#9ca3af">{lbl}</text>;
+      })}
+      {/* Series lines — each normalized to its own min/max */}
+      {series.map((s, si) => {
+        const n = s.data.length;
+        const mn = Math.min(...s.data), mx = Math.max(...s.data);
+        const rng = mx - mn || 1;
+        const pts = s.data.map((v, i) => {
+          const x = getX(i, n);
+          const y = pT + plotH - ((v - mn) / rng) * plotH;
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(" ");
+        return <polyline key={si} points={pts} fill="none" stroke={s.color}
+          strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />;
+      })}
+      {/* X labels every ~2 */}
+      {PERF_XLABELS.map((lbl, i) => {
+        const n = series[0]?.data?.length || 31;
+        const idx = Math.round(i * (n - 1) / (PERF_XLABELS.length - 1));
+        const x = getX(idx, n);
+        return <text key={i} x={x} y={H - 4} textAnchor="middle" fontSize="8.5" fill="#9ca3af">{lbl}</text>;
+      })}
+    </svg>
+  );
+}
+
+function SvgHorizBars({ data }) {
+  const barH = 20, gap = 8;
+  const maxVal = Math.max(...data.map(d => d.value));
+  const W = 400, maxBarW = 230;
+  const totalH = data.length * (barH + gap) - gap + 24;
+  const axisTicks = [0, 0.25, 0.5, 0.75, 1].map(t => t * maxVal);
+
+  return (
+    <svg viewBox={`0 0 ${W} ${totalH}`} width="100%">
+      {/* Axis ticks */}
+      {axisTicks.map((v, i) => {
+        const x = (v / maxVal) * maxBarW;
+        return (
+          <g key={i}>
+            <line x1={x} y1={0} x2={x} y2={totalH - 18} stroke="#f3f4f6" strokeWidth="1"/>
+            <text x={x} y={totalH - 4} textAnchor="middle" fontSize="9" fill="#9ca3af">
+              ${v < 1 ? v.toFixed(2) : v.toFixed(0)}
+            </text>
+          </g>
+        );
+      })}
+      {/* Bars */}
+      {data.map((d, i) => {
+        const bw = Math.max((d.value / maxVal) * maxBarW, 2);
+        const y = i * (barH + gap);
+        return (
+          <g key={i}>
+            <rect x={0} y={y} width={bw} height={barH} fill={d.color} rx={2}/>
+            <text x={bw + 5} y={y + barH - 4} fontSize="11" fill="#374151" fontWeight="500">
+              ${d.value.toFixed(2)}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function SvgVertBars({ data }) {
+  const W = 400, H = 200;
+  const pL = 42, pR = 20, pT = 28, pB = 40;
+  const plotW = W - pL - pR, plotH = H - pT - pB;
+  const maxVal = Math.max(...data.map(d => d.value));
+  const barW = plotW / data.length * 0.55;
+  const slot = plotW / data.length;
+  const yTicks = [0, 25, 50, 75, 100].map(p => (p / 100) * maxVal);
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%">
+      {/* Y grid */}
+      {yTicks.map((v, i) => {
+        const y = pT + plotH - (v / maxVal) * plotH;
+        return (
+          <g key={i}>
+            <line x1={pL} y1={y} x2={W - pR} y2={y} stroke="#f3f4f6" strokeWidth="1"/>
+            <text x={pL - 4} y={y + 4} textAnchor="end" fontSize="9" fill="#9ca3af">${v.toFixed(0)}</text>
+          </g>
+        );
+      })}
+      {/* Bars */}
+      {data.map((d, i) => {
+        const x = pL + i * slot + (slot - barW) / 2;
+        const bh = (d.value / maxVal) * plotH;
+        const y = pT + plotH - bh;
+        return (
+          <g key={i}>
+            <rect x={x} y={y} width={barW} height={bh} fill={d.color} rx={3}/>
+            <text x={x + barW / 2} y={y - 5} textAnchor="middle" fontSize="10" fill="#374151" fontWeight="600">
+              ${d.value.toFixed(2)}
+            </text>
+            <text x={x + barW / 2} y={H - 8} textAnchor="middle" fontSize="9.5" fill="#6b7280">{d.label}</text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// ── ChartCard wrapper ──────────────────────────────────────────────────────────
+function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, children }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+      <div className="flex items-start justify-between mb-1">
+        <div className="flex items-center gap-1 flex-wrap">
+          <span className="text-sm font-bold text-gray-800">{title}</span>
+          {feat && <FeatBadge />}
+          {tabs && (
+            <div className="flex items-center gap-0 ml-3">
+              {tabs.map(t => (
+                <button key={t}
+                  onClick={() => onTabChange && onTabChange(t)}
+                  className={`text-xs px-2 py-0.5 border-b-2 transition-colors ${activeTab === t
+                    ? "border-[#0071CE] text-[#0071CE] font-medium"
+                    : "border-transparent text-gray-400 hover:text-gray-600"}`}>
+                  {t}
+                  <span className="ml-0.5 text-gray-400 inline-flex"><InfoIcon /></span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-2 ml-4 shrink-0">
+          {right}
+          <button onClick={() => setOpen(v => !v)} className="text-gray-400 hover:text-gray-600">
+            {open ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
+          </button>
+        </div>
+      </div>
+      {open && <div className="mt-3">{children}</div>}
+    </div>
+  );
+}
+
+// ── Dashboard page ─────────────────────────────────────────────────────────────
+function DashboardPage() {
+  const [perfTab, setPerfTab]     = useState("Total ROAS");
+  const [roasTab, setRoasTab]     = useState("Pickup");
+  const [buyerType, setBuyerType] = useState("Overall");
+
+  const perfSeries = [
+    { data: PERF_SALES, color: "#4ABFBF" },
+    { data: PERF_SPEND, color: "#374151" },
+    { data: PERF_ROAS,  color: "#6BBF6B" },
+  ];
+
+  const DropFilter = ({ label }) => (
+    <div className="relative inline-flex items-center">
+      <select className="appearance-none border border-gray-200 rounded px-2.5 py-1.5 pr-6 text-xs text-gray-600 bg-white focus:outline-none focus:border-[#0071CE] cursor-pointer">
+        <option>{label}</option>
+      </select>
+      <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-gray-400">
+        <ChevronDown size={10}/>
+      </span>
+    </div>
+  );
+
+  return (
+    <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
+
+      {/* Page title */}
+      <h1 style={{
+        fontFamily: "'Nunito Sans', sans-serif",
+        fontSize: "32px", fontWeight: 700, color: "#2e2f32",
+        letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2, marginBottom: "24px",
+      }}>
+        Dashboard
+      </h1>
+
+      {/* ── Filters ── */}
+      <div className="flex flex-wrap items-center gap-2 mb-5">
+        <DropFilter label="Campaigns" />
+        <DropFilter label="Categories" />
+        <DropFilter label="Brands" />
+        <div className="flex-1" />
+        <DropFilter label="Itemset: Featured" />
+        <DropFilter label="Attribution: 14 days" />
+        <div className="relative inline-flex items-center border border-gray-200 rounded px-2.5 py-1.5 text-xs text-gray-600 bg-white gap-1.5 cursor-pointer hover:border-[#0071CE]">
+          <CalendarIcon />
+          Oct 1, 2024 – Oct 31, 2024
+        </div>
+      </div>
+
+      {/* ── KPI row ── */}
+      <div className="grid grid-cols-7 gap-3 mb-5">
+        {dashKPIs.map((kpi) => (
+          <div key={kpi.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3">
+            <div className="flex items-start gap-0.5 mb-1">
+              <span className="text-xs text-gray-500 leading-snug">{kpi.label}{kpi.star ? " *" : ""}</span>
+              {kpi.feat && <FeatBadge />}
+              <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
+            </div>
+            <div className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans',sans-serif" }}>
+              {kpi.value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Row 1: Performance Summary + ROAS Breakdown ── */}
+      <div className="grid gap-4 mb-4" style={{ gridTemplateColumns: "2fr 1fr" }}>
+
+        <ChartCard title="Performance Summary" feat
+          tabs={["Total Attributed Sales","Spend","Total ROAS"]}
+          activeTab={perfTab} onTabChange={setPerfTab}>
+          <SvgLineChart series={perfSeries} />
+        </ChartCard>
+
+        <ChartCard title="ROAS Breakdown" feat
+          tabs={["Pickup","Delivery","Store"]}
+          activeTab={roasTab} onTabChange={setRoasTab}>
+          <div className="flex flex-col items-center">
+            <SvgDonut segments={roasBreakdown} size={180}
+              centerLine1="" centerLine2="" />
+            {/* Donut labels with % */}
+            <div className="flex flex-col gap-1 mt-2 w-full px-4">
+              {roasBreakdown.map(seg => (
+                <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
+                  <span className="inline-block w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
+                  <span className="flex-1">{seg.label}</span>
+                  <span className="font-semibold text-gray-800">{seg.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* ── Row 2: Top 5 Campaigns + Top 5 Lineitems ── */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+
+        <ChartCard title="Top 5 Campaigns by ROAS" feat
+          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+          <SvgHorizBars data={topCampaigns} />
+          <div className="mt-3 space-y-1">
+            {topCampaigns.map((d) => (
+              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
+                <span className="truncate">{d.name}</span>
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+
+        <ChartCard title="Top 5 Lineitems by ROAS" feat
+          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+          <SvgHorizBars data={topLineitems} />
+          <div className="mt-3 space-y-1">
+            {topLineitems.map((d) => (
+              <div key={d.name} className="flex items-center gap-1.5 text-xs text-gray-500">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: d.color }}/>
+                <span className="truncate">{d.name}</span>
+              </div>
+            ))}
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* ── Row 3: Top 5 Tactics + Buyer Analysis ── */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+
+        <ChartCard title="Top 5 Tactics by ROAS" feat
+          right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+          <SvgVertBars data={topTactics} />
+        </ChartCard>
+
+        <ChartCard title="Buyer Analysis" feat
+          right={
+            <div className="relative inline-flex items-center">
+              <select className="appearance-none border border-gray-200 rounded px-2 py-1 pr-5 text-xs text-gray-600 bg-white focus:outline-none">
+                <option>Overall</option>
+              </select>
+              <span className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={10}/></span>
+            </div>
+          }>
+          <div className="flex items-center gap-4">
+            <SvgDonut segments={buyerSegments} size={160}
+              centerLine1={buyerType} centerLine2="33.2k" />
+            <div className="flex flex-col gap-2 flex-1">
+              {buyerSegments.map(seg => (
+                <div key={seg.label} className="flex items-center gap-2 text-xs text-gray-600">
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: seg.color }}/>
+                  <span className="flex-1">{seg.label}</span>
+                  <InfoIcon />
+                </div>
+              ))}
+              <p className="text-[10px] text-gray-400 mt-1 leading-snug">
+                * Buyer counts do not use fair share attribution across tactic and line item. Please do not sum these values.
+              </p>
+            </div>
+          </div>
+        </ChartCard>
+      </div>
+
+      {/* ── Footer ── */}
+      <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
+        * Walmart Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from Walmart 1st-party data. These metrics may not reflect actual billing.
+      </p>
+      <p className="text-[10px] text-gray-400 text-center mt-3">
+        © 2000-2024 Walmart Inc. All Rights Reserved.{" "}
+        <a href="#" className="underline">Privacy and Terms</a>
+      </p>
+    </main>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function AllCampaigns() {
-  const [search, setSearch]           = useState("");
-  const [statusFilter, setStatus]     = useState("All statuses");
-  const [perPage, setPerPage]         = useState(10);
-  const [expanded, setExpanded]       = useState({});
-  const [showCreateModal, setCreate]  = useState(false);
+  const [page, setPage]           = useState("campaigns");
+  const [search, setSearch]       = useState("");
+  const [statusFilter, setStatus] = useState("All statuses");
+  const [perPage, setPerPage]     = useState(10);
+  const [expanded, setExpanded]   = useState({});
+  const [showCreateModal, setCreate] = useState(false);
 
   const filtered = campaigns.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase())
   );
-
   const toggleRow = (i) => setExpanded((prev) => ({ ...prev, [i]: !prev[i] }));
 
   return (
@@ -805,123 +1237,127 @@ export default function AllCampaigns() {
       `}</style>
 
       <TopNav />
-      <Sidebar />
+      <Sidebar currentPage={page} onNavigate={setPage} />
 
       {showCreateModal && (
         <CreateCampaignModal onClose={() => setCreate(false)} />
       )}
 
-      <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
+      {page === "dashboard" && <DashboardPage />}
 
-        <div className="flex items-center justify-between" style={{ marginBottom: "30px" }}>
-          <h1 style={{
-            fontFamily: "'Nunito Sans', sans-serif",
-            fontSize: "32px",
-            fontWeight: 700,
-            color: "#2e2f32",
-            letterSpacing: "-0.3px",
-            margin: 0,
-            lineHeight: 1.2,
-          }}>
-            All Campaigns
-          </h1>
-          <button
-            onClick={() => setCreate(true)}
-            className="bg-[#0071CE] hover:bg-[#005FA3] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm">
-            Create campaign
-          </button>
-        </div>
+      {page === "campaigns" && (
+        <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
 
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="flex items-center justify-end gap-3 px-4 py-3 border-b border-gray-100">
-            <div className="relative">
-              <select value={statusFilter} onChange={(e) => setStatus(e.target.value)}
-                className="appearance-none border border-gray-300 rounded px-3 py-1.5 pr-7 text-sm text-gray-700 bg-white cursor-pointer focus:outline-none focus:border-[#0071CE]">
-                {["All statuses", "Active", "Completed", "Paused", "Draft"].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-500">
-                <ChevronDown />
-              </span>
-            </div>
-            <div className="relative">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></span>
-              <input type="text" placeholder="Search campaign name / ID"
-                value={search} onChange={(e) => setSearch(e.target.value)}
-                className="border border-gray-300 rounded pl-8 pr-3 py-1.5 text-sm text-gray-700 w-56 focus:outline-none focus:border-[#0071CE] placeholder-gray-400" />
-            </div>
+          <div className="flex items-center justify-between" style={{ marginBottom: "30px" }}>
+            <h1 style={{
+              fontFamily: "'Nunito Sans', sans-serif",
+              fontSize: "32px",
+              fontWeight: 700,
+              color: "#2e2f32",
+              letterSpacing: "-0.3px",
+              margin: 0,
+              lineHeight: 1.2,
+            }}>
+              All Campaigns
+            </h1>
+            <button
+              onClick={() => setCreate(true)}
+              className="bg-[#0071CE] hover:bg-[#005FA3] text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm">
+              Create campaign
+            </button>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 bg-white">
-                  <th className="w-8" />
-                  {columns.map((col) => (
-                    <th key={col.key}
-                      className={`${col.width} text-left px-3 py-3 text-xs font-semibold text-[#2e2f32] whitespace-nowrap select-none`}>
-                      <span className="inline-flex items-center gap-1 cursor-pointer hover:text-[#0071CE] group">
-                        {col.label}
-                        {col.info && <span className="text-gray-400 group-hover:text-[#0071CE]"><InfoIcon /></span>}
-                        {col.sortable && (
-                          <span className="text-gray-400 group-hover:text-[#0071CE]">
-                            <svg width="10" height="14" viewBox="0 0 10 16" fill="none">
-                              <path d="M5 1v14M1 5l4-4 4 4M1 11l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          </span>
-                        )}
-                      </span>
-                    </th>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="flex items-center justify-end gap-3 px-4 py-3 border-b border-gray-100">
+              <div className="relative">
+                <select value={statusFilter} onChange={(e) => setStatus(e.target.value)}
+                  className="appearance-none border border-gray-300 rounded px-3 py-1.5 pr-7 text-sm text-gray-700 bg-white cursor-pointer focus:outline-none focus:border-[#0071CE]">
+                  {["All statuses", "Active", "Completed", "Paused", "Draft"].map((s) => (
+                    <option key={s}>{s}</option>
                   ))}
-                  <th className="w-10" />
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((row, i) => (
-                  <React.Fragment key={i}>
-                    <tr className={`border-b border-gray-100 transition-colors hover:bg-blue-50/30 ${expanded[i] ? "bg-blue-50/20" : ""}`}>
-                      <td className="pl-3 pr-1 py-3 text-gray-400">
-                        <button onClick={() => toggleRow(i)}
-                          className="hover:text-[#0071CE] transition-transform"
-                          style={{ transform: expanded[i] ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", transition: "transform 150ms" }}>
-                          <ChevronRight size={12} />
-                        </button>
-                      </td>
-                      <td className="px-3 py-3">
-                        <button className="text-[#0071CE] hover:underline font-medium text-sm block leading-tight">{row.name}</button>
-                        <span className="text-gray-400 text-xs">ID: {row.id}</span>
-                      </td>
-                      <td className="px-3 py-3"><StatusBadge status={row.status} /></td>
-                      <td className="px-3 py-3 text-gray-700 whitespace-nowrap">{row.duration}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.ecpm}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.dailyBudget}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.totalBudget || <span className="text-gray-300">—</span>}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.totalSpend}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.impressions}</td>
-                      <td className="px-3 py-3 text-gray-700">{row.pacing}</td>
-                      <td className="px-3 py-3 text-gray-400">
-                        <button className="hover:text-gray-600 hover:bg-gray-100 rounded p-1 transition-colors"><DotsIcon /></button>
-                      </td>
-                    </tr>
-                    {expanded[i] && (
-                      <tr key={`exp-${i}`} className="bg-blue-50/20 border-b border-gray-100">
-                        <td />
-                        <td colSpan={10} className="px-6 py-3">
-                          <div className="text-xs text-gray-500 italic">No ad groups found for this campaign.</div>
-                        </td>
-                        <td />
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </select>
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-500">
+                  <ChevronDown />
+                </span>
+              </div>
+              <div className="relative">
+                <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></span>
+                <input type="text" placeholder="Search campaign name / ID"
+                  value={search} onChange={(e) => setSearch(e.target.value)}
+                  className="border border-gray-300 rounded pl-8 pr-3 py-1.5 text-sm text-gray-700 w-56 focus:outline-none focus:border-[#0071CE] placeholder-gray-400" />
+              </div>
+            </div>
 
-          <Pagination current={1} total={3} perPage={perPage} onPerPageChange={setPerPage} />
-        </div>
-      </main>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-white">
+                    <th className="w-8" />
+                    {columns.map((col) => (
+                      <th key={col.key}
+                        className={`${col.width} text-left px-3 py-3 text-xs font-semibold text-[#2e2f32] whitespace-nowrap select-none`}>
+                        <span className="inline-flex items-center gap-1 cursor-pointer hover:text-[#0071CE] group">
+                          {col.label}
+                          {col.info && <span className="text-gray-400 group-hover:text-[#0071CE]"><InfoIcon /></span>}
+                          {col.sortable && (
+                            <span className="text-gray-400 group-hover:text-[#0071CE]">
+                              <svg width="10" height="14" viewBox="0 0 10 16" fill="none">
+                                <path d="M5 1v14M1 5l4-4 4 4M1 11l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          )}
+                        </span>
+                      </th>
+                    ))}
+                    <th className="w-10" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((row, i) => (
+                    <React.Fragment key={i}>
+                      <tr className={`border-b border-gray-100 transition-colors hover:bg-blue-50/30 ${expanded[i] ? "bg-blue-50/20" : ""}`}>
+                        <td className="pl-3 pr-1 py-3 text-gray-400">
+                          <button onClick={() => toggleRow(i)}
+                            className="hover:text-[#0071CE] transition-transform"
+                            style={{ transform: expanded[i] ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", transition: "transform 150ms" }}>
+                            <ChevronRight size={12} />
+                          </button>
+                        </td>
+                        <td className="px-3 py-3">
+                          <button className="text-[#0071CE] hover:underline font-medium text-sm block leading-tight">{row.name}</button>
+                          <span className="text-gray-400 text-xs">ID: {row.id}</span>
+                        </td>
+                        <td className="px-3 py-3"><StatusBadge status={row.status} /></td>
+                        <td className="px-3 py-3 text-gray-700 whitespace-nowrap">{row.duration}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.ecpm}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.dailyBudget}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.totalBudget || <span className="text-gray-300">—</span>}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.totalSpend}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.impressions}</td>
+                        <td className="px-3 py-3 text-gray-700">{row.pacing}</td>
+                        <td className="px-3 py-3 text-gray-400">
+                          <button className="hover:text-gray-600 hover:bg-gray-100 rounded p-1 transition-colors"><DotsIcon /></button>
+                        </td>
+                      </tr>
+                      {expanded[i] && (
+                        <tr key={`exp-${i}`} className="bg-blue-50/20 border-b border-gray-100">
+                          <td />
+                          <td colSpan={10} className="px-6 py-3">
+                            <div className="text-xs text-gray-500 italic">No ad groups found for this campaign.</div>
+                          </td>
+                          <td />
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <Pagination current={1} total={3} perPage={perPage} onPerPageChange={setPerPage} />
+          </div>
+        </main>
+      )}
     </div>
   );
 }
