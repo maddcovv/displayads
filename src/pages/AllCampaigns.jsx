@@ -1342,7 +1342,7 @@ function RecommendationsInsights() {
         {/* Col 1 – Campaign out of budget */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col1.title}</h3>
-          <p className="text-[10px] text-gray-500 leading-relaxed mb-5">{s.col1.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed" style={{ marginBottom: "20px" }}>{s.col1.body}</p>
           <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FEF3C7"/><path d="M12 7v5M12 16h.01" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round"/></svg>
             <p className="text-xs text-amber-800">{s.col1.highlight}</p>
@@ -1368,7 +1368,7 @@ function RecommendationsInsights() {
         {/* Col 2 – Optimize items */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col2.title}</h3>
-          <p className="text-[10px] text-gray-500 leading-relaxed mb-5">{s.col2.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed" style={{ marginBottom: "20px" }}>{s.col2.body}</p>
           <div className="space-y-4">
             {s.col2.items.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
@@ -1393,7 +1393,7 @@ function RecommendationsInsights() {
         {/* Col 3 – Optimize keywords */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col3.title}</h3>
-          <p className="text-[10px] text-gray-500 leading-relaxed mb-5">{s.col3.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed" style={{ marginBottom: "20px" }}>{s.col3.body}</p>
           <div className="space-y-4">
             {s.col3.groups.map((grp, i) => (
               <div key={i}>
