@@ -215,6 +215,47 @@ const CartIcon = () => (
   </svg>
 );
 
+const DownloadIcon = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+  </svg>
+);
+const ClockIcon = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+  </svg>
+);
+const CheckCircleIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/>
+  </svg>
+);
+const SpinnerIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+  </svg>
+);
+const FileTextIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
+  </svg>
+);
+const BarChartSquareIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+    <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 17V11M12 17V9M16 17v-5"/>
+  </svg>
+);
+const UsersIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+  </svg>
+);
+const TrendingUpIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+  </svg>
+);
+
 // ── Mock Data ──────────────────────────────────────────────────────────────────
 const campaigns = [
   { id: "10001", name: "Halloween Candy",       status: "In Progress", duration: "9/1/2024–10/31/2024",  ecpm: "$2.50", dailyBudget: "$500.00",   totalBudget: "$15,000.00", totalSpend: "$8,200.00",  impressions: "328,000",   pacing: "71%" },
@@ -393,7 +434,7 @@ function TopNav() {
           </div>
 
           {/* ── Help ── */}
-          <button className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100">
+          <button className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-90 hover:opacity-100 cursor-pointer">
             <HelpIcon />
           </button>
 
@@ -516,7 +557,7 @@ function AdGroupsPopulated() {
               </div>
               {/* Actions */}
               <div className="flex items-center gap-3 shrink-0">
-                <button className="text-xs text-[#0071CE] hover:underline font-medium">Unschedule</button>
+                <button className="text-xs text-[#0071CE] hover:underline font-medium cursor-pointer">Unschedule</button>
                 <button className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100"><EditIcon /></button>
                 <button className="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-gray-100"><TrashIcon /></button>
               </div>
@@ -730,7 +771,7 @@ function CreateCampaignModal({ onClose }) {
 
                 <button
                   onClick={() => setShowDescription((v) => !v)}
-                  className="mt-3 flex items-center gap-1 text-sm text-[#0071CE] hover:underline font-medium">
+                  className="mt-3 flex items-center gap-1 text-sm text-[#0071CE] hover:underline font-medium cursor-pointer">
                   <span className="text-lg leading-none">{showDescription ? "−" : "+"}</span>
                   Description
                 </button>
@@ -794,7 +835,7 @@ function CreateCampaignModal({ onClose }) {
                             className="text-sm text-gray-700 w-20 focus:outline-none" />
                           <span className="text-gray-400"><CalendarIcon /></span>
                         </div>
-                        <button className="flex items-center gap-1.5 text-sm text-[#0071CE] hover:underline font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-[#0071CE] hover:underline font-medium cursor-pointer">
                           <RefreshIcon />
                           Add end date
                         </button>
@@ -1165,7 +1206,7 @@ function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, c
                     : "border-transparent text-gray-400 hover:text-gray-600"}`}>
                   {t}
                   <Tooltip text={`View ${t} metric details and attribution window settings.`}>
-                    <span className="ml-0.5 text-gray-400 inline-flex"><InfoIcon /></span>
+                    <span className="ml-0.5 text-gray-400 inline-flex cursor-help"><InfoIcon /></span>
                   </Tooltip>
                 </button>
               ))}
@@ -1301,7 +1342,7 @@ function RecommendationsInsights() {
         {/* Col 1 – Campaign out of budget */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col1.title}</h3>
-          <p className="text-[11px] text-gray-500 leading-relaxed mb-3">{s.col1.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed mb-3">{s.col1.body}</p>
           <div className="flex items-center gap-2 bg-amber-50 border border-amber-100 rounded px-3 py-2 mb-4">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#FEF3C7"/><path d="M12 7v5M12 16h.01" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round"/></svg>
             <p className="text-xs text-amber-800">{s.col1.highlight}</p>
@@ -1327,7 +1368,7 @@ function RecommendationsInsights() {
         {/* Col 2 – Optimize items */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col2.title}</h3>
-          <p className="text-[11px] text-gray-500 leading-relaxed mb-4">{s.col2.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed mb-4">{s.col2.body}</p>
           <div className="space-y-4">
             {s.col2.items.map((item, i) => (
               <div key={i} className="flex items-start gap-3">
@@ -1352,7 +1393,7 @@ function RecommendationsInsights() {
         {/* Col 3 – Optimize keywords */}
         <div className="p-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-1">{s.col3.title}</h3>
-          <p className="text-[11px] text-gray-500 leading-relaxed mb-4">{s.col3.body}</p>
+          <p className="text-[10px] text-gray-500 leading-relaxed mb-4">{s.col3.body}</p>
           <div className="space-y-4">
             {s.col3.groups.map((grp, i) => (
               <div key={i}>
@@ -1384,6 +1425,396 @@ function RecommendationsInsights() {
         ))}
       </div>
     </div>
+  );
+}
+
+// ── Reports page ───────────────────────────────────────────────────────────────
+const REPORT_TEMPLATES = [
+  { key: "campaign",  icon: <BarChartSquareIcon size={22}/>, color: "#0071CE", bg: "#EFF6FF", label: "Campaign Performance",  desc: "Impressions, spend, ROAS, and pacing across all campaigns for any date range." },
+  { key: "sales",     icon: <TrendingUpIcon     size={22}/>, color: "#10B981", bg: "#ECFDF5", label: "Sales & ROAS",           desc: "Revenue attribution and return on ad spend broken down by delivery channel." },
+  { key: "reach",     icon: <EyeIcon            size={22}/>, color: "#8B5CF6", bg: "#F5F3FF", label: "Impression & Reach",     desc: "Audience reach, frequency caps, and impression delivery by placement type." },
+  { key: "audience",  icon: <UsersIcon          size={22}/>, color: "#F59E0B", bg: "#FFFBEB", label: "Audience Insights",      desc: "Buyer segment performance, demographic breakdowns, and behavioral analysis." },
+];
+
+const SAVED_REPORTS = [
+  { id: 1, name: "Halloween Candy Q4 Performance",    type: "Campaign Performance", fmt: "CSV",  range: "Oct 1 – Oct 31, 2024",    created: "Nov 1, 2024",   size: "42 KB",  status: "ready" },
+  { id: 2, name: "Easter Spring Sales ROAS Summary",  type: "Sales & ROAS",        fmt: "XLSX", range: "Mar 1 – Apr 15, 2024",    created: "Apr 16, 2024",  size: "118 KB", status: "ready" },
+  { id: 3, name: "Q3 2024 Impression Report",         type: "Impression & Reach",  fmt: "PDF",  range: "Jul 1 – Sep 30, 2024",    created: "Oct 5, 2024",   size: "2.1 MB", status: "ready" },
+  { id: 4, name: "Valentine's Campaign Analysis",     type: "Campaign Performance", fmt: "CSV",  range: "Feb 1 – Feb 28, 2024",    created: "Mar 2, 2024",   size: "38 KB",  status: "ready" },
+  { id: 5, name: "Back to School Audience Report",    type: "Audience Insights",   fmt: "XLSX", range: "Aug 1 – Sep 15, 2024",    created: "Sep 20, 2024",  size: "95 KB",  status: "ready" },
+  { id: 6, name: "Holiday Season Full Report",        type: "Campaign Performance", fmt: "PDF",  range: "Nov 1 – Dec 31, 2024",    created: "—",             size: "—",      status: "processing" },
+  { id: 7, name: "Super Bowl Snacks ROAS Deep Dive",  type: "Sales & ROAS",        fmt: "XLSX", range: "Jan 20 – Feb 9, 2025",    created: "—",             size: "—",      status: "failed" },
+];
+
+const SCHEDULED_REPORTS = [
+  { id: 1, name: "Weekly Campaign Summary",   freq: "Every Monday at 9:00 AM",    fmt: "CSV",  next: "Mar 17, 2025", active: true },
+  { id: 2, name: "Monthly ROAS Report",       freq: "1st of each month, 8:00 AM", fmt: "XLSX", next: "Apr 1, 2025",  active: true },
+  { id: 3, name: "Quarterly Audience Review", freq: "Quarterly, Jan/Apr/Jul/Oct",  fmt: "PDF",  next: "Apr 1, 2025",  active: false },
+];
+
+const FMT_STYLES = {
+  CSV:  { bg: "#DCFCE7", color: "#15803D" },
+  XLSX: { bg: "#EDE9FE", color: "#6D28D9" },
+  PDF:  { bg: "#FEE2E2", color: "#B91C1C" },
+};
+
+function ReportsPage() {
+  const [showCreate, setShowCreate]     = useState(false);
+  const [search, setSearch]             = useState("");
+  const [fmtFilter, setFmtFilter]       = useState("All formats");
+  const [reports, setReports]           = useState(SAVED_REPORTS);
+  const [scheduled, setScheduled]       = useState(SCHEDULED_REPORTS);
+  const [preselect, setPreselect]       = useState(null);
+
+  // Create-report form
+  const [rName,     setRName]     = useState("");
+  const [rType,     setRType]     = useState("Campaign Performance");
+  const [rFmt,      setRFmt]      = useState("CSV");
+  const [rRange,    setRRange]    = useState("Last 30 days");
+  const [rSchedule, setRSchedule] = useState("one-time");
+  const [rFreq,     setRFreq]     = useState("Weekly");
+  const [rMetrics,  setRMetrics]  = useState(["Impressions", "Ad Spend", "ROAS", "Total Sales"]);
+
+  const ALL_METRICS = ["Impressions", "Ad Spend", "ROAS", "Total Sales", "Store Sales", "Pickup Sales", "Delivery Sales", "eCPM", "CTR", "Conversions"];
+
+  const openCreate = (templateKey = null) => {
+    if (templateKey) {
+      const t = REPORT_TEMPLATES.find(t => t.key === templateKey);
+      if (t) setRType(t.label);
+    }
+    setRName("");
+    setShowCreate(true);
+  };
+
+  const handleGenerate = () => {
+    const newReport = {
+      id: reports.length + 1,
+      name: rName || `${rType} — ${rRange}`,
+      type: rType,
+      fmt:  rFmt,
+      range: rRange,
+      created: "—",
+      size: "—",
+      status: "processing",
+    };
+    setReports(prev => [newReport, ...prev]);
+    setShowCreate(false);
+    // Simulate completion after 2s
+    setTimeout(() => {
+      setReports(prev => prev.map(r =>
+        r.id === newReport.id ? { ...r, status: "ready", created: "Just now", size: "54 KB" } : r
+      ));
+    }, 2000);
+  };
+
+  const deleteReport = (id) => setReports(prev => prev.filter(r => r.id !== id));
+  const toggleSchedule = (id) => setScheduled(prev => prev.map(s => s.id === id ? { ...s, active: !s.active } : s));
+
+  const filtered = reports.filter(r =>
+    r.name.toLowerCase().includes(search.toLowerCase()) &&
+    (fmtFilter === "All formats" || r.fmt === fmtFilter)
+  );
+
+  const toggleMetric = (m) => setRMetrics(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m]);
+
+  return (
+    <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)] bg-[#F2F4F7]" style={{ padding: "35px 24px 100px" }}>
+      <div style={{ maxWidth: "1040px", margin: "0 auto" }}>
+
+        {/* ── Title row ── */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "32px", fontWeight: 700, color: "#2e2f32", letterSpacing: "-0.3px", margin: 0, lineHeight: 1.2 }}>
+            Reports
+          </h1>
+          <button onClick={() => openCreate()}
+            className="flex items-center gap-2 bg-[#0071CE] hover:bg-[#005FA3] text-white rounded-full px-5 py-2.5 text-sm font-semibold transition-colors cursor-pointer shadow-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Create report
+          </button>
+        </div>
+
+        {/* ── Quick-start templates ── */}
+        <div className="mb-6">
+          <p className="text-sm font-semibold text-gray-600 mb-3">Quick start</p>
+          <div className="grid grid-cols-4 gap-3">
+            {REPORT_TEMPLATES.map(t => (
+              <div key={t.key} className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col gap-3 shadow-sm hover:shadow-md hover:border-gray-300 transition-all group">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: t.bg, color: t.color }}>
+                  {t.icon}
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-800 leading-snug mb-1">{t.label}</p>
+                  <p className="text-[11px] text-gray-500 leading-relaxed">{t.desc}</p>
+                </div>
+                <button onClick={() => openCreate(t.key)}
+                  className="text-[#0071CE] text-xs font-semibold hover:underline text-left cursor-pointer mt-auto">
+                  Generate →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Saved reports ── */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm mb-5 overflow-hidden">
+          {/* Table toolbar */}
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
+            <span className="text-sm font-bold text-gray-800 flex-1">My reports</span>
+            <div className="relative">
+              <input value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search reports…"
+                className="border border-gray-200 rounded-lg px-3 py-1.5 pl-8 text-xs text-gray-700 focus:outline-none focus:border-[#0071CE] w-48"/>
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400"><SearchIcon /></span>
+            </div>
+            <div className="relative inline-flex items-center">
+              <select value={fmtFilter} onChange={e => setFmtFilter(e.target.value)}
+                className="appearance-none border border-gray-200 rounded-lg px-3 py-1.5 pr-7 text-xs text-gray-600 bg-white focus:outline-none focus:border-[#0071CE] cursor-pointer">
+                <option>All formats</option>
+                <option>CSV</option>
+                <option>XLSX</option>
+                <option>PDF</option>
+              </select>
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={10}/></span>
+            </div>
+          </div>
+
+          {/* Table */}
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50 text-left">
+                {["Report name","Type","Format","Date range","Created","Size","Status",""].map((h, i) => (
+                  <th key={i} className={`px-4 py-3 font-semibold text-gray-500 whitespace-nowrap ${i === 7 ? "w-20" : ""}`}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(r => (
+                <tr key={r.id} className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
+                  <td className="px-4 py-3">
+                    <span className="flex items-center gap-2">
+                      <span className="text-gray-300"><FileTextIcon size={14}/></span>
+                      <span className="font-medium text-gray-800">{r.name}</span>
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{r.type}</td>
+                  <td className="px-4 py-3">
+                    <span className="px-2 py-0.5 rounded text-[11px] font-bold" style={FMT_STYLES[r.fmt]}>
+                      {r.fmt}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{r.range}</td>
+                  <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{r.created}</td>
+                  <td className="px-4 py-3 text-gray-400">{r.size}</td>
+                  <td className="px-4 py-3">
+                    {r.status === "ready" && (
+                      <span className="flex items-center gap-1.5 text-green-600">
+                        <CheckCircleIcon size={12}/> <span className="font-medium">Ready</span>
+                      </span>
+                    )}
+                    {r.status === "processing" && (
+                      <span className="flex items-center gap-1.5 text-blue-500 animate-pulse">
+                        <SpinnerIcon size={12}/> <span className="font-medium">Processing…</span>
+                      </span>
+                    )}
+                    {r.status === "failed" && (
+                      <span className="flex items-center gap-1.5 text-red-500">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+                        <span className="font-medium">Failed</span>
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="flex items-center gap-2">
+                      {r.status === "ready" && (
+                        <button className="text-[#0071CE] hover:text-[#005FA3] cursor-pointer transition-colors" title="Download">
+                          <DownloadIcon size={14}/>
+                        </button>
+                      )}
+                      <button onClick={() => deleteReport(r.id)} className="text-gray-300 hover:text-red-400 cursor-pointer transition-colors" title="Delete">
+                        <TrashIcon />
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {filtered.length === 0 && (
+                <tr><td colSpan={8} className="px-4 py-10 text-center text-gray-400 text-sm">No reports match your search.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── Scheduled reports ── */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-6">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
+            <ClockIcon size={15}/>
+            <span className="text-sm font-bold text-gray-800 flex-1">Scheduled reports</span>
+            <button onClick={() => openCreate()} className="text-xs text-[#0071CE] font-semibold hover:underline cursor-pointer">
+              + Add schedule
+            </button>
+          </div>
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-gray-100 bg-gray-50 text-left">
+                {["Report name","Frequency","Format","Next run","Status",""].map((h, i) => (
+                  <th key={i} className={`px-4 py-3 font-semibold text-gray-500 ${i === 5 ? "w-24" : ""}`}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {scheduled.map(s => (
+                <tr key={s.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60 transition-colors">
+                  <td className="px-4 py-3 font-medium text-gray-800">{s.name}</td>
+                  <td className="px-4 py-3 text-gray-500">{s.freq}</td>
+                  <td className="px-4 py-3">
+                    <span className="px-2 py-0.5 rounded text-[11px] font-bold" style={FMT_STYLES[s.fmt]}>{s.fmt}</span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500">{s.next}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => toggleSchedule(s.id)}
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer shrink-0 ${s.active ? "bg-[#0071CE]" : "bg-gray-200"}`}>
+                      <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-transform ${s.active ? "translate-x-[18px]" : "translate-x-1"}`}/>
+                    </button>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="flex items-center gap-2">
+                      <button className="text-gray-400 hover:text-gray-700 cursor-pointer transition-colors"><EditIcon /></button>
+                      <button onClick={() => setScheduled(prev => prev.filter(x => x.id !== s.id))} className="text-gray-300 hover:text-red-400 cursor-pointer transition-colors"><TrashIcon /></button>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer */}
+        <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
+          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
+        </p>
+        <p className="text-[10px] text-gray-400 text-center mt-3">
+          © 2025 Sample Ad Inc. All Rights Reserved.{" "}
+          <a href="#" className="underline cursor-pointer">Privacy and Terms</a>
+        </p>
+      </div>
+
+      {/* ── Create report drawer ── */}
+      {showCreate && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 bg-black/30 z-40" onClick={() => setShowCreate(false)}/>
+          {/* Drawer */}
+          <div className="fixed top-0 right-0 h-full bg-white shadow-2xl z-50 flex flex-col" style={{ width: "440px" }}>
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <h2 className="text-base font-bold text-gray-800">Create report</h2>
+              <button onClick={() => setShowCreate(false)} className="text-gray-400 hover:text-gray-700 cursor-pointer"><XIcon /></button>
+            </div>
+
+            {/* Drawer body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-6">
+
+              {/* Report name */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Report name</label>
+                <input value={rName} onChange={e => setRName(e.target.value)}
+                  placeholder="e.g. Q4 Halloween Campaign Performance"
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-[#0071CE] focus:ring-1 focus:ring-[#0071CE]/20"/>
+              </div>
+
+              {/* Report type */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-2">Report type</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {REPORT_TEMPLATES.map(t => (
+                    <button key={t.key} onClick={() => setRType(t.label)}
+                      className={`flex items-center gap-2.5 p-3 rounded-lg border text-left transition-all cursor-pointer ${rType === t.label ? "border-[#0071CE] bg-blue-50 text-[#0071CE]" : "border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"}`}>
+                      <span style={{ color: rType === t.label ? t.color : "#9CA3AF" }}>{t.icon}</span>
+                      <span className="text-xs font-medium leading-snug">{t.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Date range */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Date range</label>
+                <div className="relative">
+                  <select value={rRange} onChange={e => setRRange(e.target.value)}
+                    className="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2.5 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:border-[#0071CE] cursor-pointer">
+                    {["Last 7 days","Last 14 days","Last 30 days","Last 90 days","This month","Last month","Custom range"].map(d => (
+                      <option key={d}>{d}</option>
+                    ))}
+                  </select>
+                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={12}/></span>
+                </div>
+              </div>
+
+              {/* Metrics */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-2">Metrics <span className="text-gray-400 font-normal">({rMetrics.length} selected)</span></label>
+                <div className="flex flex-wrap gap-2">
+                  {ALL_METRICS.map(m => (
+                    <button key={m} onClick={() => toggleMetric(m)}
+                      className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors cursor-pointer ${rMetrics.includes(m) ? "bg-[#0071CE] border-[#0071CE] text-white" : "bg-white border-gray-200 text-gray-500 hover:border-gray-400"}`}>
+                      {m}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Export format */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-2">Export format</label>
+                <div className="flex gap-2">
+                  {["CSV","XLSX","PDF"].map(f => (
+                    <button key={f} onClick={() => setRFmt(f)}
+                      className={`flex-1 py-2.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${rFmt === f ? "text-white border-transparent" : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"}`}
+                      style={rFmt === f ? { backgroundColor: FMT_STYLES[f].color, borderColor: FMT_STYLES[f].color } : {}}>
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Schedule */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-2">Schedule</label>
+                <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+                  {[["one-time","One-time"],["recurring","Recurring"]].map(([val, lbl]) => (
+                    <button key={val} onClick={() => setRSchedule(val)}
+                      className={`flex-1 py-2.5 text-xs font-semibold transition-colors cursor-pointer ${rSchedule === val ? "bg-[#0071CE] text-white" : "bg-white text-gray-500 hover:bg-gray-50"}`}>
+                      {lbl}
+                    </button>
+                  ))}
+                </div>
+                {rSchedule === "recurring" && (
+                  <div className="mt-2 relative">
+                    <select value={rFreq} onChange={e => setRFreq(e.target.value)}
+                      className="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2.5 pr-8 text-sm text-gray-700 bg-white focus:outline-none focus:border-[#0071CE] cursor-pointer">
+                      {["Daily","Weekly","Monthly","Quarterly"].map(f => <option key={f}>{f}</option>)}
+                    </select>
+                    <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown size={12}/></span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Drawer footer */}
+            <div className="border-t border-gray-100 px-6 py-4 flex items-center gap-3">
+              <button onClick={handleGenerate}
+                className="flex-1 bg-[#0071CE] hover:bg-[#005FA3] text-white rounded-full py-2.5 text-sm font-semibold transition-colors cursor-pointer shadow-sm">
+                {rSchedule === "recurring" ? "Save schedule" : "Generate report"}
+              </button>
+              <button onClick={() => setShowCreate(false)}
+                className="px-4 py-2.5 border border-gray-200 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </main>
   );
 }
 
@@ -1860,7 +2291,7 @@ function DashboardPage() {
               <div className="flex items-start gap-0.5 mb-1">
                 <span className="text-xs text-gray-500 leading-snug">{kpi.label}{kpi.star ? " *" : ""}</span>
                 <Tooltip text={`${kpi.label}: attributed using a 14-day click, same-day view-through attribution window.`}>
-                  <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5"><InfoIcon /></span>
+                  <span className="ml-1 text-gray-300 inline-flex shrink-0 mt-0.5 cursor-help"><InfoIcon /></span>
                 </Tooltip>
               </div>
               <div className="text-lg font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans',sans-serif" }}>
@@ -1872,15 +2303,11 @@ function DashboardPage() {
 
         {/* ── Row 1: Performance Summary + ROAS Breakdown ── */}
         <div className="grid gap-4 mb-4" style={{ gridTemplateColumns: "2fr 1fr" }}>
-          <ChartCard title="Performance Summary"
-            tabs={["Total Attributed Sales","Spend","Total ROAS"]}
-            activeTab={perfTab} onTabChange={setPerfTab}>
+          <ChartCard title="Performance Summary">
             <SvgLineChart series={perfSeries} />
           </ChartCard>
 
-          <ChartCard title="ROAS Breakdown"
-            tabs={["Pickup","Delivery","Store"]}
-            activeTab={roasTab} onTabChange={setRoasTab}>
+          <ChartCard title="ROAS Breakdown">
             <div className="flex flex-col items-center">
               <SvgDonut segments={roasBreakdown} size={180} centerLine1="" centerLine2="" />
               <div className="flex flex-col gap-1 mt-2 w-full px-4">
@@ -1999,6 +2426,8 @@ export default function AllCampaigns() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap');
         * { box-sizing: border-box; }
+        button { cursor: pointer; }
+        a { cursor: pointer; }
       `}</style>
 
       <TopNav />
@@ -2010,6 +2439,7 @@ export default function AllCampaigns() {
 
       {page === "dashboard"  && <DashboardPage />}
       {page === "analytics"  && <PerformancePage />}
+      {page === "reports"    && <ReportsPage />}
 
       {page === "campaigns" && (
         <main className="ml-[52px] mt-[52px] min-h-[calc(100vh-52px)]" style={{ padding: "35px 24px 100px" }}>
@@ -2096,7 +2526,7 @@ export default function AllCampaigns() {
                           </button>
                         </td>
                         <td className="px-3 py-3">
-                          <button className="text-[#0071CE] hover:underline font-medium text-sm block leading-tight">{row.name}</button>
+                          <button className="text-[#0071CE] hover:underline font-medium text-sm block leading-tight cursor-pointer">{row.name}</button>
                           <span className="text-gray-400 text-xs">ID: {row.id}</span>
                         </td>
                         <td className="px-3 py-3"><StatusBadge status={row.status} /></td>
