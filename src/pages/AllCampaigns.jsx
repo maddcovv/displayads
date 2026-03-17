@@ -1222,50 +1222,59 @@ function ChartCard({ title, feat = false, tabs, activeTab, onTabChange, right, c
 
 // ── Dashboard helpers ──────────────────────────────────────────────────────────
 
-// Small illustrated account-summary card icons
+// Account-summary card icons — 56px circles
 const IconLive = () => (
-  <svg width="44" height="44" viewBox="0 0 44 44">
-    <circle cx="22" cy="22" r="22" fill="#FFF0F5"/>
-    <path d="M14 19v6h4l5 4V15l-5 4h-4z" fill="#F472B6"/>
-    <path d="M28 17.5c2 1.3 3.3 3.5 3.3 6s-1.3 4.7-3.3 6" stroke="#F472B6" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-    <circle cx="31" cy="15" r="3" fill="#FB923C"/>
-    <circle cx="33" cy="13" r="2" fill="#FBBF24"/>
+  <svg width="56" height="56" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="28" fill="#FFF0F5"/>
+    {/* Megaphone */}
+    <path d="M18 24v8h5l6 5V19l-6 5h-5z" fill="#F472B6"/>
+    <path d="M35 22c2.5 1.6 4 4.2 4 7s-1.5 5.4-4 7" stroke="#F472B6" strokeWidth="2" fill="none" strokeLinecap="round"/>
+    {/* Live dot */}
+    <circle cx="39" cy="19" r="4" fill="#22C55E"/>
+    <circle cx="39" cy="19" r="2.2" fill="white"/>
   </svg>
 );
 const IconScheduled = () => (
-  <svg width="44" height="44" viewBox="0 0 44 44">
-    <circle cx="22" cy="22" r="22" fill="#EFF6FF"/>
-    <circle cx="22" cy="22" r="9" stroke="#93C5FD" strokeWidth="2" fill="none"/>
-    <path d="M22 15v7l4 4" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="22" cy="13" r="1.5" fill="#BFDBFE"/>
-    <circle cx="29" cy="15" r="1.5" fill="#BFDBFE"/>
-    <circle cx="31" cy="22" r="1.5" fill="#BFDBFE"/>
+  <svg width="56" height="56" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="28" fill="#EFF6FF"/>
+    {/* Calendar */}
+    <rect x="17" y="20" width="22" height="18" rx="2.5" fill="white" stroke="#93C5FD" strokeWidth="1.5"/>
+    <rect x="17" y="20" width="22" height="6" rx="2.5" fill="#BFDBFE"/>
+    <line x1="22" y1="18" x2="22" y2="23" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+    <line x1="34" y1="18" x2="34" y2="23" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="22" cy="31" r="1.5" fill="#93C5FD"/>
+    <circle cx="28" cy="31" r="1.5" fill="#93C5FD"/>
+    <circle cx="34" cy="31" r="1.5" fill="#93C5FD"/>
+    <circle cx="22" cy="35" r="1.5" fill="#BFDBFE"/>
+    <circle cx="28" cy="35" r="1.5" fill="#BFDBFE"/>
   </svg>
 );
 const IconOutBudget = () => (
-  <svg width="44" height="44" viewBox="0 0 44 44">
-    <circle cx="22" cy="22" r="22" fill="#FFF7ED"/>
-    <polygon points="22,12 31,31 13,31" fill="#FB923C"/>
-    <rect x="16" y="24" width="12" height="2.5" fill="white" opacity="0.7"/>
-    <rect x="13.5" y="31" width="17" height="2.5" fill="#F97316" rx="1.2"/>
-    <text x="22" y="22.5" textAnchor="middle" fontSize="8" fontWeight="800" fill="white">!</text>
+  <svg width="56" height="56" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="28" fill="#FFF7ED"/>
+    {/* Warning triangle */}
+    <polygon points="28,15 40,38 16,38" fill="#FB923C"/>
+    <polygon points="28,15 40,38 16,38" fill="none" stroke="#EA580C" strokeWidth="1" strokeLinejoin="round"/>
+    <rect x="26.2" y="22" width="3.6" height="9" rx="1.8" fill="white"/>
+    <circle cx="28" cy="34.5" r="2" fill="white"/>
   </svg>
 );
 const IconBilling = () => (
-  <svg width="44" height="44" viewBox="0 0 44 44">
-    <circle cx="22" cy="22" r="22" fill="#EFF6FF"/>
-    <path d="M12 16h2.5l3 9h10l2-7H18" stroke="#3B82F6" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="18.5" cy="28" r="2" fill="#3B82F6"/>
-    <circle cx="26.5" cy="28" r="2" fill="#3B82F6"/>
-    <text x="28" y="17" fontSize="8" fontWeight="700" fill="#3B82F6">$</text>
+  <svg width="56" height="56" viewBox="0 0 56 56">
+    <circle cx="28" cy="28" r="28" fill="#F0FDF4"/>
+    {/* Dollar coin stack */}
+    <ellipse cx="28" cy="35" rx="10" ry="3.5" fill="#86EFAC"/>
+    <rect x="18" y="21" width="20" height="14" rx="2" fill="#4ADE80"/>
+    <ellipse cx="28" cy="21" rx="10" ry="3.5" fill="#86EFAC"/>
+    <text x="28" y="31" textAnchor="middle" fontSize="10" fontWeight="800" fill="white">$</text>
   </svg>
 );
 
 const ACCT_SUMMARY = [
-  { icon: <IconLive />,       label: "Live campaigns",            value: "10", link: "View campaigns",     linkPage: "campaigns" },
-  { icon: <IconScheduled />,  label: "Scheduled campaigns",       value: "03", link: "View campaigns",     linkPage: "campaigns" },
-  { icon: <IconOutBudget />,  label: "Out of budget campaigns",   value: "02", link: "View campaigns",     linkPage: "campaigns" },
-  { icon: <IconBilling />,    label: "Outstanding balance",       value: "$14,250", link: "Visit billing manager", linkPage: null },
+  { icon: <IconLive />,      label: "Live campaigns",          value: "10",      sublabel: "currently running",       link: "View campaigns",       linkPage: "campaigns", accent: "#22C55E" },
+  { icon: <IconScheduled />, label: "Scheduled campaigns",     value: "03",      sublabel: "upcoming",                link: "View campaigns",       linkPage: "campaigns", accent: "#3B82F6" },
+  { icon: <IconOutBudget />, label: "Out of budget",           value: "02",      sublabel: "need attention",          link: "View campaigns",       linkPage: "campaigns", accent: "#F97316" },
+  { icon: <IconBilling />,   label: "Outstanding balance",     value: "$14,250", sublabel: "current billing period",  link: "Visit billing manager",linkPage: null,        accent: "#10B981" },
 ];
 
 const INIT_TASKS = [
@@ -2239,12 +2248,28 @@ function DashboardPage() {
           </div>
           <div className="grid grid-cols-4 gap-3">
             {ACCT_SUMMARY.map((card) => (
-              <div key={card.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-4 flex items-center gap-4">
-                <div className="shrink-0">{card.icon}</div>
-                <div className="min-w-0">
-                  <p className="text-xs text-gray-500 mb-0.5">{card.label}</p>
-                  <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Nunito Sans', sans-serif" }}>{card.value}</p>
-                  <button className="text-xs text-[#0071CE] hover:underline mt-0.5 cursor-pointer">{card.link}</button>
+              <div key={card.label} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
+                style={{ borderTop: `3px solid ${card.accent}` }}>
+                {/* Upper area: icon + label */}
+                <div className="flex items-start gap-3 px-5 pt-5 pb-3">
+                  <div className="shrink-0">{card.icon}</div>
+                  <div className="pt-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">{card.label}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">{card.sublabel}</p>
+                  </div>
+                </div>
+                {/* Value */}
+                <div className="px-5 pb-1">
+                  <p className="font-bold text-gray-900 leading-none"
+                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "2.4rem" }}>
+                    {card.value}
+                  </p>
+                </div>
+                {/* Link */}
+                <div className="px-5 pb-5 mt-auto pt-2">
+                  <button className="text-xs font-semibold cursor-pointer hover:underline" style={{ color: card.accent }}>
+                    {card.link} →
+                  </button>
                 </div>
               </div>
             ))}
