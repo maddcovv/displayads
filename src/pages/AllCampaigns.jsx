@@ -2407,7 +2407,7 @@ function DashboardPage() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function AllCampaigns() {
-  const [page, setPage]           = useState("campaigns");
+  const [page, setPage]           = useState("dashboard");
   const [search, setSearch]       = useState("");
   const [statusFilter, setStatus] = useState("All statuses");
   const [perPage, setPerPage]     = useState(10);
