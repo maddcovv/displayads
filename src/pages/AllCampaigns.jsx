@@ -1401,7 +1401,7 @@ function RecommendationsInsights() {
             {s.col3.groups.map((grp, i) => (
               <div key={i}>
                 <p className="text-xs text-gray-500 mb-1">Adgroup name: <a href="#" className="text-[#0071CE] hover:underline font-medium">{grp.name}</a></p>
-                <div className="flex flex-wrap gap-1 mb-1.5">
+                <div className="flex flex-wrap gap-1 mb-1.5 mt-1">
                   {grp.tags.map(tag => (
                     <span key={tag} className="px-2 rounded-full bg-gray-100 text-[11px] text-gray-600 border border-gray-200 inline-flex items-center" style={{ height: "25px" }}>{tag}</span>
                   ))}
