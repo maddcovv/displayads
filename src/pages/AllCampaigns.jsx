@@ -2245,16 +2245,17 @@ function DashboardPage() {
           </div>
           <div className="grid grid-cols-4 gap-3">
             {ACCT_SUMMARY.map((card) => (
-              <div key={card.label} className="bg-white rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 px-5 py-4">
+              <div key={card.label} className="bg-white rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 px-5"
+                style={{ height: "100px" }}>
                 <div className="shrink-0">{card.icon}</div>
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-500 leading-tight mb-0.5">{card.label}</p>
-                  <p className="font-bold text-gray-900 leading-none mb-1.5"
-                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "1.6rem" }}>
+                  <p className="text-xs text-gray-500 leading-tight whitespace-nowrap">{card.label}</p>
+                  <p className="font-bold text-gray-900 leading-none mt-2 mb-2"
+                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "1.5rem" }}>
                     {card.value}
                   </p>
-                  <button className="text-xs font-medium cursor-pointer hover:underline" style={{ color: card.accent }}>
-                    {card.link} →
+                  <button className="text-xs font-medium cursor-pointer hover:underline whitespace-nowrap" style={{ color: card.accent }}>
+                    {card.link}
                   </button>
                 </div>
               </div>
