@@ -967,13 +967,10 @@ function CreateCampaignModal({ onClose }) {
 
 // ── Dashboard data ─────────────────────────────────────────────────────────────
 const dashKPIs = [
-  { label: "Impressions",                          feat: false, value: "8,718,618" },
-  { label: "Total Attributed Sales",               feat: true,  value: "$2,892,009" },
-  { label: "Total Attributed Transactions",        feat: true,  value: "5,816" },
-  { label: "Total Attributed Units",               feat: true,  value: "5,942" },
-  { label: "Total ROAS",                           feat: true,  value: "$39.73" },
-  { label: "eCPM",                                 feat: false, value: "$8.35" },
-  { label: "Spend",                                feat: false, value: "$72,799", star: true },
+  { label: "Impressions",  feat: false, value: "8,718,618" },
+  { label: "Total ROAS",   feat: true,  value: "$39.73" },
+  { label: "eCPM",         feat: false, value: "$8.35" },
+  { label: "Spend",        feat: false, value: "$72,799", star: true },
 ];
 
 const PERF_SALES  = [180,185,210,195,175,165,155,220,280,265,255,240,175,180,210,250,270,260,240,225,210,195,180,210,245,265,285,300,278,255,235];
@@ -2310,7 +2307,7 @@ function DashboardPage() {
         )}
 
         {/* ── KPI metric tiles ── */}
-        <div className="grid grid-cols-7 gap-3 mb-5">
+        <div className="grid grid-cols-4 gap-3 mb-5">
           {dashKPIs.map((kpi) => (
             <div key={kpi.label} className="bg-white rounded-lg border border-gray-200 shadow-sm px-3 py-3">
               <div className="flex items-start gap-0.5 mb-1">
