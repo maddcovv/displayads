@@ -1323,8 +1323,8 @@ function RecommendationsInsights() {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-purple-100" style={{ background: "#FAF5FF" }}>
         <div className="flex items-center gap-2">
-          <span className="text-purple-500">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0" style={{ background: "#EDE9FE" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           </span>
           <span className="text-sm font-semibold text-gray-800">Recommendations and insights ({slide + 1}/{total})</span>
         </div>
@@ -1352,13 +1352,25 @@ function RecommendationsInsights() {
           </div>
           <p className="text-xs text-gray-500 mb-1">Campaign name:</p>
           <a href="#" className="text-xs text-[#0071CE] hover:underline font-medium block mb-3">{s.col1.name}</a>
-          <div className="grid grid-cols-2 gap-y-0.5 text-xs mb-4">
-            {s.col1.stats.map((row, i) => (
-              <React.Fragment key={i}>
-                <span className={i % 2 === 0 ? "font-medium text-gray-700" : "text-gray-800"}>{row.left}</span>
-                <span className={i % 2 === 0 ? "font-medium text-gray-700" : "text-gray-800"}>{row.right}</span>
-              </React.Fragment>
-            ))}
+          <div className="flex gap-3 text-xs mb-4">
+            <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
+              <p className="font-medium text-gray-500 mb-1">{s.col1.stats[0].left}</p>
+              <p className="font-bold text-gray-800 text-sm">{s.col1.stats[1].left}</p>
+            </div>
+            <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
+              <p className="font-medium text-gray-500 mb-1">{s.col1.stats[0].right}</p>
+              <p className="font-bold text-gray-800 text-sm">{s.col1.stats[1].right}</p>
+            </div>
+          </div>
+          <div className="flex gap-3 text-xs mb-4">
+            <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
+              <p className="font-medium text-gray-500 mb-1">{s.col1.stats[2].left}</p>
+              <p className="font-bold text-gray-800 text-sm">{s.col1.stats[3].left}</p>
+            </div>
+            <div className="flex-1 bg-gray-50 rounded-lg px-3 py-2.5 border border-gray-100">
+              <p className="font-medium text-gray-500 mb-1">{s.col1.stats[2].right}</p>
+              <p className="font-bold text-gray-800 text-sm">{s.col1.stats[3].right}</p>
+            </div>
           </div>
           <div className="flex items-center gap-1.5">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
