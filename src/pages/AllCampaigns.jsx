@@ -2248,7 +2248,7 @@ function DashboardPage() {
                 <div className="min-w-0">
                   <p className="text-xs text-gray-500 leading-tight whitespace-nowrap">{card.label}</p>
                   <p className="font-bold text-gray-900 leading-none mt-2 mb-2"
-                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "1.5rem" }}>
+                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "1.5rem", paddingTop: "5px" }}>
                     {card.value}
                   </p>
                   <button className="text-xs font-medium cursor-pointer hover:underline whitespace-nowrap" style={{ color: card.accent }}>
