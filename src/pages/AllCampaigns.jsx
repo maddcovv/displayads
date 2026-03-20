@@ -1709,7 +1709,7 @@ function ReportsPage() {
 
         {/* Footer */}
         <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
-          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
+          * Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
         </p>
         <p className="text-[10px] text-gray-400 text-center mt-3">
           © 2025 Sample Ad Inc. All Rights Reserved.{" "}
@@ -2188,7 +2188,7 @@ function PerformancePage() {
 
         {/* Footer */}
         <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
-          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
+          * Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
         </p>
         <p className="text-[10px] text-gray-400 text-center mt-3">
           © 2025 Sample Ad Inc. All Rights Reserved.{" "}
@@ -2418,7 +2418,7 @@ function DashboardPage() {
 
         {/* ── Footer ── */}
         <p className="text-[10px] text-gray-400 text-center mt-4 leading-snug">
-          * Connect Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
+          * Ad Center Display Performance Dashboards include impression and spend metrics sourced from 1st-party data. These metrics may not reflect actual billing.
         </p>
         <p className="text-[10px] text-gray-400 text-center mt-3">
           © 2025 Sample Ad Inc. All Rights Reserved.{" "}
