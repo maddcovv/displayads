@@ -1373,7 +1373,9 @@ function RecommendationsInsights() {
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#EDE9FE" }}>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </span>
             <p className="text-xs text-gray-500">{s.col1.cta.pre}{" "}
               <a href="#" className="text-[#0071CE] hover:underline">{s.col1.cta.link}</a>
             </p>
@@ -1394,7 +1396,9 @@ function RecommendationsInsights() {
                   <p className="text-xs font-medium text-gray-800 leading-snug">{item.name}</p>
                   <p className="text-[11px] text-gray-400">Item Id: {item.id}  Brand: {item.brand}</p>
                   <div className="flex items-center gap-1 mt-0.5">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0" style={{ background: "#EDE9FE" }}>
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="#A855F7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </span>
                     <p className="text-[11px] text-gray-500">{item.note}{" "}
                       <a href="#" className="text-[#0071CE] hover:underline">{item.action}</a>
                     </p>
