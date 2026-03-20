@@ -1226,9 +1226,6 @@ const IconLive = () => (
     {/* Megaphone */}
     <path d="M18 24v8h5l6 5V19l-6 5h-5z" fill="#F472B6"/>
     <path d="M35 22c2.5 1.6 4 4.2 4 7s-1.5 5.4-4 7" stroke="#F472B6" strokeWidth="2" fill="none" strokeLinecap="round"/>
-    {/* Live dot */}
-    <circle cx="39" cy="19" r="4" fill="#22C55E"/>
-    <circle cx="39" cy="19" r="2.2" fill="white"/>
   </svg>
 );
 const IconScheduled = () => (
