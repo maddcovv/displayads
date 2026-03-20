@@ -2354,7 +2354,7 @@ function DashboardPage() {
         {/* ── Row 2: Top 5 Campaigns + Top 5 Lineitems ── */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <ChartCard title="Top 5 Campaigns by ROAS"
-            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <Tooltip text="Estimated Total ROAS: total attributed sales divided by total ad spend, using a 14-day click attribution window."><span className="cursor-help"><InfoIcon /></span></Tooltip></span>}>
             <SvgHorizBars data={topCampaigns} />
             <div className="mt-3 space-y-1">
               {topCampaigns.map((d) => (
@@ -2367,7 +2367,7 @@ function DashboardPage() {
           </ChartCard>
 
           <ChartCard title="Top 5 Lineitems by ROAS"
-            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <Tooltip text="Estimated Total ROAS: total attributed sales divided by total ad spend, using a 14-day click attribution window."><span className="cursor-help"><InfoIcon /></span></Tooltip></span>}>
             <SvgHorizBars data={topLineitems} />
             <div className="mt-3 space-y-1">
               {topLineitems.map((d) => (
@@ -2383,7 +2383,7 @@ function DashboardPage() {
         {/* ── Row 3: Top 5 Tactics + Buyer Analysis ── */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <ChartCard title="Top 5 Tactics by ROAS"
-            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <InfoIcon /></span>}>
+            right={<span className="text-xs text-gray-500 flex items-center gap-0.5">Estimated Total ROAS <Tooltip text="Estimated Total ROAS: total attributed sales divided by total ad spend, using a 14-day click attribution window."><span className="cursor-help"><InfoIcon /></span></Tooltip></span>}>
             <SvgVertBars data={topTactics} />
           </ChartCard>
 
