@@ -1268,10 +1268,10 @@ const IconBilling = () => (
 );
 
 const ACCT_SUMMARY = [
-  { icon: <IconLive />,      label: "Live campaigns",          value: "10",      sublabel: "currently running",       link: "View campaigns",       linkPage: "campaigns", accent: "#22C55E" },
-  { icon: <IconScheduled />, label: "Scheduled campaigns",     value: "03",      sublabel: "upcoming",                link: "View campaigns",       linkPage: "campaigns", accent: "#3B82F6" },
-  { icon: <IconOutBudget />, label: "Out of budget",           value: "02",      sublabel: "need attention",          link: "View campaigns",       linkPage: "campaigns", accent: "#F97316" },
-  { icon: <IconBilling />,   label: "Outstanding balance",     value: "$14,250", sublabel: "current billing period",  link: "Visit billing manager",linkPage: null,        accent: "#10B981" },
+  { icon: <IconLive />,      label: "Live campaigns",      value: "10",      link: "View campaigns",        linkPage: "campaigns", accent: "#22C55E" },
+  { icon: <IconScheduled />, label: "Scheduled campaigns", value: "03",      link: "View campaigns",        linkPage: "campaigns", accent: "#3B82F6" },
+  { icon: <IconOutBudget />, label: "Out of budget",       value: "02",      link: "View campaigns",        linkPage: "campaigns", accent: "#F97316" },
+  { icon: <IconBilling />,   label: "Outstanding balance", value: "$14,250", link: "Visit billing manager", linkPage: null,        accent: "#10B981" },
 ];
 
 const INIT_TASKS = [
@@ -2245,26 +2245,15 @@ function DashboardPage() {
           </div>
           <div className="grid grid-cols-4 gap-3">
             {ACCT_SUMMARY.map((card) => (
-              <div key={card.label} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col"
-                style={{ borderTop: `3px solid ${card.accent}` }}>
-                {/* Upper area: icon + label */}
-                <div className="flex items-start gap-3 px-5 pt-5 pb-3">
-                  <div className="shrink-0">{card.icon}</div>
-                  <div className="pt-1 min-w-0">
-                    <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide leading-tight">{card.label}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">{card.sublabel}</p>
-                  </div>
-                </div>
-                {/* Value */}
-                <div className="px-5 pb-1">
-                  <p className="font-bold text-gray-900 leading-none"
-                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "2.4rem" }}>
+              <div key={card.label} className="bg-white rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 px-5 py-4">
+                <div className="shrink-0">{card.icon}</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 leading-tight mb-0.5">{card.label}</p>
+                  <p className="font-bold text-gray-900 leading-none mb-1.5"
+                    style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: "1.6rem" }}>
                     {card.value}
                   </p>
-                </div>
-                {/* Link */}
-                <div className="px-5 pb-5 mt-auto pt-2">
-                  <button className="text-xs font-semibold cursor-pointer hover:underline" style={{ color: card.accent }}>
+                  <button className="text-xs font-medium cursor-pointer hover:underline" style={{ color: card.accent }}>
                     {card.link} →
                   </button>
                 </div>
